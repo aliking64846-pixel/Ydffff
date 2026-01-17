@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>Rescue Helmet AI</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #111; color: #fff; text-align: center; }
+  h1 { margin-top: 20px; }
+  #video { width: 80%; max-width: 600px; margin: 20px auto; border: 2px solid #0f0; }
+  button { margin: 10px; padding: 15px 25px; font-size: 18px; border-radius: 8px; cursor: pointer; }
+  #status { font-size: 20px; margin-top: 15px; }
+</style>
+</head>
+<body>
+
+<h1>Rescue Helmet AI</h1>
+
+<video id="video" autoplay></video>
+<div>
+  <button onclick="setMode('SEARCH')">🔍 بحث عن أشخاص</button>
+  <button onclick="setMode('DANGER')">⚠️ وضع الخطر</button>
+  <button onclick="setMode('IDLE')">⛔ إيقاف</button>
+</div>
+<div id="status">الوضع الحالي: الاستعداد</div>
+
+<script>
+// ---- المتغيرات ----
+let MODE = 'IDLE';
+let video = document.getElementById('video');
+let status = document.getElementById('status');
+
+// ---- الكاميرا ----
+navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+.then(stream => {
+  video.srcObject = stream;
+})
+.catch(err => {
+  alert('لم يتم الوصول إلى الكاميرا: ' + err);
+});
+
+// ---- الأصوات ----
+function speak(text){
+  let utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'ar-SA';
+  window.speechSynthesis.speak(utter);
+}
+
+// ---- تغيير الوضع ----
+function setMode(newMode){
+  MODE = newMode;
+  status.innerText = 'الوضع الحالي: ' + MODE;
+  if(MODE === 'SEARCH') speak('وضع البحث مفعل');
+  else if(MODE === 'DANGER') speak('تحذير، تم تفعيل وضع الخطر');
+  else if(MODE === 'IDLE') speak('تم إيقاف النظام');
+}
+
+// ---- أوامر صوتية ----
+if ('webkitSpeechRecognition' in window) {
+  let recognition = new webkitSpeechRecognition();
+  recognition.continuous = true;
+  recognition.lang = 'ar-SA';
+  recognition.interimResults = false;
+  recognition.start();
+
+  recognition.onresult = function(event){
+    let command = event.results[event.results.length-1][0].transcript.trim();
+    console.log('أمر صوتي:', command);
+    if(command.includes('ابحث')) setMode('SEARCH');
+    else if(command.includes('خطر')) setMode('DANGER');
+    else if(command.includes('توقف')) setMode('IDLE');
+  }
+} else {
+  alert('أوامر الصوت غير مدعومة في هذا المتصفح');
+}
+
+// ---- تنبيه عند اكتشاف الوجه (مثال بديل للكاميرا) ----
+// في نسخة متقدمة يمكن استخدام TensorFlow.js للتعرف على الأشخاص
+</script>
+
+</body>
+</html>
