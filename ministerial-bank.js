@@ -11,7 +11,8 @@
     {id:'social_2025_r1',subject:'الاجتماعيات',year:2025,round:'الدور الأول',provider:'ملازمنا',url:'https://mlazemna.com/sa25ga/'},
     {id:'social_2025_r2',subject:'الاجتماعيات',year:2025,round:'الدور الثاني',provider:'ملازمنا',url:'https://mlazemna.com/sa252ga/'},
     {id:'social_2025_r3',subject:'الاجتماعيات',year:2025,round:'الدور الثالث',provider:'ملازمنا',url:'https://mlazemna.com/sa253ga/'},
-    {id:'social_2026_r1',subject:'الاجتماعيات',year:2026,round:'الدور الأول',provider:'ملازمنا',url:'https://mlazemna.com/sa26ga/'}
+    {id:'social_2026_r1',subject:'الاجتماعيات',year:2026,round:'الدور الأول',provider:'ملازمنا',url:'https://mlazemna.com/sa26ga/'},
+    {id:'social_2025_r1_detail',subject:'الاجتماعيات',year:2025,round:'الدور الأول',provider:'يُدرك',url:'https://yudrik.com/ar/blog/social_3rd_intermediate_2025_round1'}
   ];
 
   // أضف هنا فقط الأسئلة التي تم تفريغها والتحقق من ورقتها/حلها.
@@ -45,6 +46,81 @@
       sourceId:'social_2025_r1',
       sourceLabel:'أسئلة الاجتماعيات الثالث متوسط 2025 الدور الأول',
       sourceUrl:'https://mlazemna.com/sa25ga/',
+      verified:true,
+      type:'وزاري'
+    },
+    {
+      id:'min_2025_r1_geography_mountain',
+      question:'عرّف المنطقة الجبلية.',
+      answer:'هي أحد الأشكال التضاريسية المكونة لشكل العراق، تقع في القسم الشمالي والشمالي الشرقي من وطننا العراق وتكون على شكل هلال، تقدر مساحتها بـ 23500 كم² أي ما يعادل 6% من مساحة العراق.',
+      subject:'الجغرافية',
+      lessonId:6,
+      chapter:'الخصائص الطبيعية لجغرافية العراق',
+      year:2025,
+      round:'الدور الأول',
+      sourceId:'social_2025_r1_detail',
+      sourceLabel:'تفريغ سؤال 2025 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/ar/blog/social_3rd_intermediate_2025_round1',
+      verified:true,
+      type:'وزاري'
+    },
+    {
+      id:'min_2025_r1_geography_weather',
+      question:'عرّف الطقس.',
+      answer:'هو وصف حالة الجو من حيث درجات الحرارة والضغط الجوي والرياح والأمطار لمكان محدد ولمدة قصيرة (ساعة، يوم، أسبوع).',
+      subject:'الجغرافية',
+      lessonId:10,
+      chapter:'الخصائص الطبيعية لجغرافية العراق',
+      year:2025,
+      round:'الدور الأول',
+      sourceId:'social_2025_r1_detail',
+      sourceLabel:'تفريغ سؤال 2025 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/ar/blog/social_3rd_intermediate_2025_round1',
+      verified:true,
+      type:'وزاري'
+    },
+    {
+      id:'min_2025_r1_geography_food_crops',
+      question:'عرّف المحاصيل الغذائية.',
+      answer:'هي أحد المحاصيل الزراعية وتشمل المحاصيل التي تشكل الغذاء الرئيس للسكان، ويمكن تقسيمها على محاصيل الحبوب والخضروات والفواكه والعلف.',
+      subject:'الجغرافية',
+      lessonId:23,
+      chapter:'الخصائص البشرية لجغرافية العراق',
+      year:2025,
+      round:'الدور الأول',
+      sourceId:'social_2025_r1_detail',
+      sourceLabel:'تفريغ سؤال 2025 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/ar/blog/social_3rd_intermediate_2025_round1',
+      verified:true,
+      type:'وزاري'
+    },
+    {
+      id:'min_2025_r1_history_medhat_pasha',
+      question:'عرّف مدحت باشا.',
+      answer:'يعد من أشهر الولاة المصلحين في العراق، تولى ولاية بغداد عام 1869، ومنحه السلطان العثماني صلاحيات واسعة، ترأس السلطتين العسكرية والمدنية، واستمرت ولايته ثلاث سنوات أجرى خلالها عدداً من الإصلاحات.',
+      subject:'التاريخ',
+      lessonId:34,
+      chapter:'العراق في العهد العثماني',
+      year:2025,
+      round:'الدور الأول',
+      sourceId:'social_2025_r1_detail',
+      sourceLabel:'تفريغ سؤال 2025 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/ar/blog/social_3rd_intermediate_2025_round1',
+      verified:true,
+      type:'وزاري'
+    },
+    {
+      id:'min_2025_r1_national_citizenship',
+      question:'عرّف المواطنة.',
+      answer:'هي كلمة مشتقة من مصطلح الوطن وتعبر عن المكان الذي يعيش فيه الإنسان، وتتحدد بموجبها الحقوق والواجبات التي تتضمن انتماء المواطن لوطنه.',
+      subject:'التربية الوطنية والاجتماعية',
+      lessonId:49,
+      chapter:'القيم الوطنية والاجتماعية والقضايا الاجتماعية',
+      year:2025,
+      round:'الدور الأول',
+      sourceId:'social_2025_r1_detail',
+      sourceLabel:'تفريغ سؤال 2025 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/ar/blog/social_3rd_intermediate_2025_round1',
       verified:true,
       type:'وزاري'
     },
