@@ -142,6 +142,9 @@ body{padding-bottom:70px}
 </div>
 <div class="toast" id="toast"></div>
 <script>
+/* GLOBAL RUNTIME STATE */
+var ministerialTimer=null, ministerialTimeLeft=0;
+var nightTimer=null, nightTimeLeft=0;
 (function(){
   window.__future100BootErrors=[];
   window.addEventListener('error',function(e){
