@@ -120,7 +120,9 @@
       const c=await get(l);
       window.lessonContentCache=window.lessonContentCache||{}; window.lessonContentCache[id]=c;
       const sections=['definitions','reasons','enumerate','blanks','trueFalse','chapterQuestions','ministerial'];
+      const ls=window.Future100Learning?.lessonStats?window.Future100Learning.lessonStats(id):{total:0,mastery:0,due:0,mistakes:0,ministerial:0};
       box.innerHTML='<div class="lessonHead"><span class="tag">'+esc(l.subject)+' • '+esc(l.chapter)+'</span><h2>'+esc(l.title)+'</h2><p>'+esc(l.summary)+'</p><div class="sourceNote">📚 المحتوى مستخرج من الكتاب المنشور داخل المشروع • الصفحات: '+c.pages.join('، ')+'</div></div>'+
+      '<div class="examPanel"><div class="kpiGrid"><div class="kpi"><b>'+ls.total+'</b><span>أسئلة الدرس</span></div><div class="kpi"><b>'+ls.mastery+'%</b><span>نسبة الإتقان</span></div><div class="kpi"><b>'+ls.due+'</b><span>مستحقة للتكرار</span></div><div class="kpi"><b>'+ls.mistakes+'</b><span>أخطاء مسجلة</span></div></div><div style="margin-top:12px"><div class="sessionBar"><i style="width:'+ls.mastery+'%"></i></div><small class="small">النظام يعيد الأسئلة الضعيفة تلقائياً ويؤخر الأسئلة المتقنة.</small></div></div>'+
       '<div class="lessonBody"><h3>🧠 معلومات قصيرة</h3><div class="fact">'+c.info.map(esc).join('<br><br>')+'</div>'+
       sections.map(k=>'<section class="contentSection"><h3>'+typeLabel(k)+'</h3>'+(c[k]&&c[k].length?c[k].map((x,i)=>'<article class="studyItem"><b>'+(i+1)+'. '+esc(x.question||'')+'</b><div class="studyAnswer">'+esc(Array.isArray(x.answer)?x.answer.join(' • '):x.answer||'')+'</div></article>').join(''):'<div class="empty">سيتم إدخال هذا النوع بعد تدقيقه.</div>')+'</section>').join('')+
       '<div class="actions"><button class="primary" onclick="startRichQuiz('+id+')">ابدأ اختبار الدرس ←</button><button class="ghost" onclick="completeLesson('+id+')">تمت المراجعة ✓</button></div></div>';
@@ -128,11 +130,12 @@
   }
   window.openLesson=openRich;
   window.startRichQuiz=function(id){
+    if(window.Future100Learning?.startLessonQuiz){window.Future100Learning.startLessonQuiz(id);return;}
     const l=lessons.find(x=>x.id===id), c=window.lessonContentCache?.[id];
     if(!l||!c){openRich(id);return}
     const qs=[...(c.ministerial||[]),...(c.chapterQuestions||[]),...(c.definitions||[]),...(c.reasons||[]),...(c.enumerate||[]),...(c.blanks||[]),...(c.trueFalse||[])].slice(0,15);
     if(!qs.length){toast('لا توجد أسئلة كافية لهذا الدرس بعد');return}
-    setView('quiz'); renderQuiz(qs.map(x=>({q:x.question,a:Array.isArray(x.answer)?x.answer.join('، '):x.answer,type:x.type||'تدريب من الكتاب'})));
+    setView('quiz'); renderQuiz(qs.map(x=>({q:x.question,a:Array.isArray(x.answer)?x.answer.join('، '):x.answer,type:x.type||'تدريب من الكتاب',lessonId:id,verified:x.verified===true})));
   };
   window.Future100Content={version:CONTENT_VERSION,get};
 })();
