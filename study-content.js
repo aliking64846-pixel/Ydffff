@@ -94,7 +94,7 @@
       return words.some(w=>t.includes(w));
     }).slice(0,12).map(x=>({question:x.q,answer:x.a,type:x.type||'تدريب'}));
     for(const q of qbank) chapterQuestions.push(q);
-    let fallback=false;
+    let fallback=sourceMissing;
     if(chapterQuestions.length<2){
       fallback=true;
       chapterQuestions.push(
