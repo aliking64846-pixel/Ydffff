@@ -64,7 +64,7 @@
     const info=[l.summary];
     const defs=[],reasons=[],enumers=[],blanks=[],tf=[];
     const chapterQuestions=extractQuestionBlocks(picked);
-    const ministerial=[];
+    const ministerial=(window.Future100MinisterialBank?.byLesson?.(l.id)||[]).map(q=>({...q,verified:true,type:'وزاري'}));
     ss.filter(x=>/(هو|هي|يعرف|تعرف|يقصد|المقصود|عبارة عن|تتكون|يتكون|يطلق على)/.test(x))
       .slice(0,8).forEach(x=>{
         const term=(l.title||'المفهوم').replace(/^(ما|تعريف|درس)\s+/,'');
@@ -100,7 +100,7 @@
       enumerate:enumers,blanks:unique(blanks,x=>norm(x.question)).slice(0,8),
       trueFalse:unique(tf,x=>norm(x.question)).slice(0,8),
       chapterQuestions:unique(chapterQuestions,x=>norm(x.question)).slice(0,20),
-      ministerial:unique(ministerial,x=>norm(x.question)).slice(0,20),
+      ministerial:unique(ministerial,x=>norm(x.question)).slice(0,50),
       raw:raw.slice(0,7000)
     };
   }
@@ -130,7 +130,7 @@
   window.startRichQuiz=function(id){
     const l=lessons.find(x=>x.id===id), c=window.lessonContentCache?.[id];
     if(!l||!c){openRich(id);return}
-    const qs=[...(c.chapterQuestions||[]),...(c.ministerial||[]),...(c.definitions||[]),...(c.reasons||[]),...(c.enumerate||[]),...(c.blanks||[]),...(c.trueFalse||[])].slice(0,15);
+    const qs=[...(c.ministerial||[]),...(c.chapterQuestions||[]),...(c.definitions||[]),...(c.reasons||[]),...(c.enumerate||[]),...(c.blanks||[]),...(c.trueFalse||[])].slice(0,15);
     if(!qs.length){toast('لا توجد أسئلة كافية لهذا الدرس بعد');return}
     setView('quiz'); renderQuiz(qs.map(x=>({q:x.question,a:Array.isArray(x.answer)?x.answer.join('، '):x.answer,type:x.type||'تدريب من الكتاب'})));
   };
