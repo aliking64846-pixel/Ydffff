@@ -369,7 +369,7 @@
     verifiedByPaper:true,
     verificationPolicy:'لا يدخل السؤال كوزاري موثوق إلا إذا كان نصه مثبتاً من ورقة امتحانية منشورة ومربوطاً بمصدرها؛ الأرشيف غير المفروغ يبقى خارج الاختبار.',
     coverageVerified: {2024:['تمهيدي','الدور الأول','الدور الثاني','الدور الثالث']},
-    version:'1.7.0',
+    version:'1.8.0',
     sources,
     questions,
     all(){ return questions.slice(); },
