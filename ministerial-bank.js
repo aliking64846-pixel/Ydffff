@@ -366,6 +366,11 @@
   ];
 
   window.Future100MinisterialBank = {
+    verifiedCrossChecks: [
+      {year:2026,round:'الدور الأول',sources:['https://yudrik.com/en/blog/social_3rd_intermediate_2026_round1','https://iraqedu.net/%D8%A7%D8%B3%D8%A6%D9%84%D8%A9-%D8%A7%D8%AC%D8%AA%D9%85%D8%A7%D8%B9%D9%8A%D8%A7%D8%AA-%D8%A7%D9%84%D8%AF%D9%88%D8%B1-%D8%A7%D9%84%D8%A7%D9%88%D9%84-%D8%A7%D9%84%D8%AB%D8%A7%D9%84%D8%AB-%D9%85%D8%AA%D9%88%D8%B3%D8%B7-26/','https://mlazemna.com/sa26ga/']},
+      {year:2025,round:'الدور الثالث',sources:['https://yudrik.com/ar/blog/social_3rd_intermediate_2025_round3','https://iraqedu.net/%D8%A7%D8%B3%D8%A6%D9%84%D8%A9-%D8%A7%D8%AC%D8%AA%D9%85%D8%A7%D8%B9%D9%8A%D8%A7%D8%AA-%D8%AF%D9%88%D8%B1-%D8%AB%D8%A7%D9%84%D8%AB-%D8%AB%D8%A7%D9%84%D8%AB-%D9%85%D8%AA%D9%88%D8%B3%D8%B7-2025/','https://mlazemna.com/sa253ga/']}
+    ],
+
     auditStatus: {
       latestWebCheck:'2026-10-06',
       confirmedPaperSources:['2022 الدور الأول','2022 الدور الثاني','2024 الدور الأول','2024 الدور الثاني','2024 الدور الثالث'],
@@ -395,7 +400,7 @@
     verifiedByPaper:true,
     verificationPolicy:'لا يدخل السؤال كوزاري موثوق إلا إذا كان نصه مثبتاً من ورقة امتحانية منشورة ومربوطاً بمصدرها؛ الأرشيف غير المفروغ يبقى خارج الاختبار.',
     coverageVerified: {2024:['تمهيدي','الدور الأول','الدور الثاني','الدور الثالث']},
-    version:'2.3.0',
+    version:'2.4.0',
     sources,
     questions,
     all(){ return questions.slice(); },
