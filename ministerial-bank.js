@@ -253,7 +253,7 @@
       subject:'التاريخ', lessonId:40, chapter:'العراق في أثناء الحرب العالمية الأولى وبعدها', year:2025, round:'الدور الأول',
       sourceId:'social_2025_r1_detail', sourceLabel:'تفريغ سؤال وزاري 2025 الدور الأول مع الحل المنشور',
       sourceUrl:'https://yudrik.com/ar/blog/social_3rd_intermediate_2025_round1', verified:true, type:'وزاري'
-    }
+    },
     {
       id:'min_2026_r1_hammr_marsh',
       question:'عرّف هور الحمار.',
