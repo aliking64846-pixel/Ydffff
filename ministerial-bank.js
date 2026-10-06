@@ -358,7 +358,7 @@
   ];
 
   window.Future100MinisterialBank = {
-    version:'1.1.0',
+    version:'1.2.0',
     sources,
     questions,
     all(){ return questions.slice(); },
