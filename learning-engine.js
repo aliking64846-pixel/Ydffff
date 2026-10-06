@@ -72,8 +72,11 @@
   };
   window.recordLearningAnswer=record;
   window.showMinistry=function(){
+    if(typeof window.renderMinistryDashboard==='function'){
+      setView('ministry'); window.renderMinistryDashboard(); return;
+    }
     const qs=allMinisterial();
-    if(!qs.length){toast('قاعدة الوزاريات موصولة وجاهزة، لكن لم يتم تفريغ أسئلة موثقة فيها بعد. لن نضع أسئلة تدريبية باسم وزاري.');return;}
+    if(!qs.length){toast('قاعدة الوزاريات موصولة وجاهزة، لكن لم يتم تفريغ أسئلة موثقة فيها بعد.');return;}
     setView('quiz'); renderQuiz(qs.slice(0,20).map(q=>({...q,q:q.question,a:q.answer,type:'وزاري موثّق'})));
   };
   window.showSmartReview=function(){
