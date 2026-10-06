@@ -142,28 +142,113 @@ body{padding-bottom:70px}
 </div>
 <div class="toast" id="toast"></div>
 <script>
+/* FUTURE100 — ISOLATED NAVIGATION LAYER
+   التنقل يعمل بشكل مستقل عن أخطاء بقية JavaScript. */
 (function(){
-  window.__future100SafeNavigate=function(v){
+  var views=['home','masteryMap','lessons','lessonView','study','chapter','book','ministry','quiz','exam','performance','nightReview','examPlan','mistakes','memory'];
+
+  function safeView(v){
     try{
+      if(!v || views.indexOf(v)<0)return false;
       document.querySelectorAll('.view').forEach(function(x){x.classList.remove('active');});
       var target=document.getElementById(v);
       if(!target)return false;
       target.classList.add('active');
-      document.querySelectorAll('.navbtn').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-view')===v);});
+      document.querySelectorAll('.navbtn').forEach(function(b){
+        b.classList.toggle('active',b.getAttribute('data-view')===v);
+      });
+      var menu=document.getElementById('moreMenu');
+      if(menu)menu.classList.remove('open');
       return true;
     }catch(e){return false;}
-  };
+  }
+  window.__future100SafeNavigate=safeView;
+
+  function run(name,fallback){
+    try{
+      if(typeof window[name]==='function'){
+        window[name]();
+        return true;
+      }
+    }catch(e){}
+    return fallback?safeView(fallback):false;
+  }
+
+  function toggleMore(){
+    try{
+      var m=document.getElementById('moreMenu');
+      if(m){m.classList.toggle('open');return true;}
+    }catch(e){}
+    return false;
+  }
+
   document.addEventListener('click',function(e){
-    var b=e.target.closest&&e.target.closest('.navbtn[data-view]');
-    if(!b)return;
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    var v=b.getAttribute('data-view');
-    if(v==='exam' && typeof window.startExam==='function'){
-      try{window.startExam();return;}catch(_e){}
-    }
-    window.__future100SafeNavigate(v);
+    try{
+      var el=e.target&&e.target.closest?e.target.closest('[data-view],#moreBtn,[onclick]'):null;
+      if(!el)return;
+
+      var v=el.getAttribute('data-view');
+      if(v){
+        e.preventDefault();e.stopImmediatePropagation();
+        if(v==='exam')run('startExam','exam');else safeView(v);
+        return;
+      }
+
+      if(el.id==='moreBtn'){
+        e.preventDefault();e.stopImmediatePropagation();
+        toggleMore();
+        return;
+      }
+
+      var oc=el.getAttribute('onclick')||'';
+      if(!oc)return;
+
+      var m=oc.match(/setView\(['"]([^'"]+)['"]\)/);
+      if(m){
+        e.preventDefault();e.stopImmediatePropagation();
+        var page=m[1];
+        if(/renderMinistryDashboard/.test(oc)){
+          if(!run('renderMinistryDashboard','ministry'))safeView('ministry');
+        }else{
+          safeView(page);
+        }
+        return;
+      }
+
+      var actions=[
+        ['openMasteryMap','masteryMap'],
+        ['openExamPlan','examPlan'],
+        ['openPerformance','performance'],
+        ['openNightReview','nightReview'],
+        ['showMistakes','mistakes'],
+        ['showSmartReview','memory'],
+        ['showMinistry','ministry'],
+        ['startMinisterialFilteredQuiz','quiz'],
+        ['startMinisterialExam','exam'],
+        ['startMinisterialPaper','exam'],
+        ['startMinisterialMistakes','quiz'],
+        ['startMinisterialDue','quiz'],
+        ['startMasteryMission','masteryMap'],
+        ['startChapterTest','chapter'],
+        ['startStudy','study'],
+        ['startExam','exam']
+      ];
+      for(var i=0;i<actions.length;i++){
+        if(oc.indexOf(actions[i][0]+'(')!==-1){
+          e.preventDefault();e.stopImmediatePropagation();
+          run(actions[i][0],actions[i][1]);
+          return;
+        }
+      }
+    }catch(err){}
   },true);
+
+  document.addEventListener('click',function(e){
+    try{
+      var m=document.getElementById('moreMenu');
+      if(m&&m.classList.contains('open')&&!e.target.closest('#moreMenu')&&!e.target.closest('#moreBtn'))m.classList.remove('open');
+    }catch(err){}
+  },false);
 })();
 </script>
 <script>
