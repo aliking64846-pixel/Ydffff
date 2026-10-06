@@ -25,7 +25,8 @@
     return 'front';
   }
   function scoreTitle(title,text){
-    const words=norm(title+' '+String(text||'').slice(0,180)).split(' ').filter(x=>x.length>2);
+    const stop=new Set(['العراق','العراقي','العراقيه','العربية','العربي','درس','الوحدة','الفصل','من','في','الى','على','عن','مع','و','او','هو','هي','هذا','هذه']);
+    const words=[...new Set(norm(title).split(' ').filter(x=>x.length>3&&!stop.has(x)))];
     const n=norm(text);
     return words.reduce((s,w)=>s+(n.includes(w)?1:0),0);
   }
