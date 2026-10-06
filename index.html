@@ -161,7 +161,9 @@ async function startMasteryMission(){
   const rows=[];
   for(const lesson of lessons){
     try{
-      const qs=await L.lessonQuestions(lesson.id);
+      // حمّل بنك الدرس أولاً؛ lessonQuestions يعتمد على cache ولا يبني المحتوى بنفسه.
+      await L.loadLessonBank(lesson.id);
+      const qs=L.lessonQuestions(lesson.id);
       for(const q of qs){
         const s=L.questionState?L.questionState(q):null;
         const mastery=s&&typeof s.mastery==='number'?s.mastery:0;
