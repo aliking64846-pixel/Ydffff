@@ -105,6 +105,7 @@ body{padding-bottom:70px}
 <button onclick="toggleMoreMenu();showMistakes()">❌ <span>أخطائي</span></button>
 <button onclick="toggleMoreMenu();setView('ministry');renderMinistryDashboard()">🏆 <span>الوزاريات</span></button>
 <button onclick="toggleMoreMenu();setView('book')">📚 <span>الكتاب كامل</span></button>
+<button class="action" onclick="startMasteryMission()">🚀 ارفعني إلى 100%</button>
 <button onclick="toggleMoreMenu();setView('lessons')">🔎 <span>بحث الدروس</span></button>
 </div>
 
@@ -148,6 +149,38 @@ let selected='الكل'; $$('[data-sub]').forEach(b=>b.onclick=()=>{selected=b.d
 $('#search').oninput=renderCards; if($('#bookSearch')) $('#bookSearch').oninput=searchBook;
 function filtered(){let q=($('#search')?.value||'').trim();return lessons.filter(l=>(selected==='الكل'||l.subject===selected)&&(!q||l.title.includes(q)||l.chapter.includes(q)||l.summary.includes(q)));}
 function renderCards(){let arr=filtered();$('#cards').innerHTML=arr.map(l=>'<article class="lesson"><span class="tag">'+l.subject+' • '+l.unit+'</span><h3>'+l.id+'. '+l.title+'</h3><p>'+l.summary+'</p><div class="progress"><div class="bar" style="width:'+(state.done[l.id]?100:0)+'%"></div></div><div class="actions"><button class="primary" onclick="startStudy('+l.id+')">'+(state.done[l.id]?'مراجعة الدرس':'ابدأ الدرس')+' ←</button><button class="ghost" onclick="startQuizFor('+l.id+')">سؤال</button></div></article>').join('')||'<div class="empty">لا توجد نتائج.</div>';}
+async function startMasteryMission(){
+  const L=window.Future100Learning;
+  if(!L||!L.lessonQuestions){toast('نظام الإتقان غير جاهز حالياً.');return;}
+  toast('جاري تجهيز مهمتك الذكية 🚀');
+  const rows=[];
+  for(const lesson of lessons){
+    try{
+      const qs=await L.lessonQuestions(lesson.id);
+      for(const q of qs){
+        const s=L.questionState?L.questionState(q):null;
+        const mastery=s&&typeof s.mastery==='number'?s.mastery:0;
+        const due=s&&s.nextReview&&s.nextReview<=Date.now();
+        const wrong=s&&s.wrong||0;
+        let priority=(due?10000:0)+(wrong*250)+(100-mastery)*10+(s&&s.attempts?0:500);
+        rows.push({...q,_priority:priority,lessonTitle:lesson.title});
+      }
+    }catch(e){}
+  }
+  const seen=new Set(), pool=[];
+  rows.sort((a,b)=>b._priority-a._priority);
+  for(const q of rows){
+    const key=q.id||q.q;
+    if(seen.has(key))continue;
+    seen.add(key);pool.push(q);
+    if(pool.length>=20)break;
+  }
+  if(!pool.length){toast('لا توجد أسئلة متاحة لهذه المهمة.');return;}
+  window.masteryMission={questions:pool,i:0,score:0,before:Number(L.masteryPercent?L.masteryPercent():0)||0};
+  setView('quiz');
+  renderQuiz(pool);
+  toast('بدأت مهمة الإتقان: 20 سؤالاً، والأضعف أولاً 🎯');
+}
 async function openMasteryMap(){
   const box=$('#masteryMapContent'),summary=$('#masterySummary');
   box.innerHTML='<div class="empty">⏳ جاري حساب إتقان الدروس الـ62…</div>';
