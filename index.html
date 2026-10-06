@@ -192,24 +192,34 @@ async function startMasteryMission(){
 }
 function openMasteryMap(){
   try{
-    setView('masteryMap');
-    const box=$('#masteryMapContent'),summary=$('#masterySummary');
-    if(!box||!summary){toast('تعذر فتح خريطة الإتقان ⚠️');return;}
+    document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
+    var page=document.getElementById('masteryMap');
+    var box=document.getElementById('masteryMapContent');
+    var summary=document.getElementById('masterySummary');
+    if(!page||!box||!summary){toast('عناصر خريطة الإتقان غير موجودة ⚠️');return;}
+    page.classList.add('active');
     box.innerHTML='<div class="empty">⏳ جاري فتح الخريطة…</div>';
-    summary.innerHTML='';
-    const rows=lessons.map(function(l){
-      let s={total:0,mastery:0,due:0,mistakes:0,ministerial:0};
-      try{if(window.Future100Learning&&typeof Future100Learning.lessonStats==='function')s=Future100Learning.lessonStats(l.id)||s;}catch(e){}
-      return Object.assign({},l,s);
-    });
-    box.innerHTML=renderMasteryRows(rows);
-    const avg=rows.length?Math.round(rows.reduce((a,x)=>a+(Number(x.mastery)||0),0)/rows.length):0;
-    const due=rows.filter(x=>(x.due||0)>0).length;
-    const strong=rows.filter(x=>(Number(x.mastery)||0)>=90).length;
+    var rows=[];
+    for(var i=0;i<lessons.length;i++){
+      var l=lessons[i], s={total:0,mastery:0,due:0,mistakes:0,ministerial:0};
+      if(window.Future100Learning && typeof window.Future100Learning.lessonStats==='function'){
+        try{s=window.Future100Learning.lessonStats(l.id)||s;}catch(_){}
+      }
+      rows.push({id:l.id,subject:l.subject,title:l.title,total:Number(s.total)||0,mastery:Number(s.mastery)||0,due:Number(s.due)||0,mistakes:Number(s.mistakes)||0,ministerial:Number(s.ministerial)||0});
+    }
+    var html='';
+    for(var j=0;j<rows.length;j++){
+      var x=rows[j],p=Math.max(0,Math.min(100,x.mastery)),label=p>=90?'🟢 ممتاز':p>=70?'🟡 جيد':'🔴 يحتاج دراسة';
+      html+='<article class="lesson" style="padding:14px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><div><span class="tag">'+x.id+' • '+x.subject+'</span><h3 style="margin:7px 0">'+x.title+'</h3></div><b style="font-size:22px">'+p+'%</b></div><div class="progress"><div class="bar" style="width:'+p+'%"></div></div><div class="small" style="margin-top:8px">'+label+' • '+x.total+' سؤال • '+x.due+' مستحق للتكرار • '+x.mistakes+' خطأ'+(x.ministerial?' • '+x.ministerial+' وزاري موثّق':'')+'</div><div class="actions"><button class="primary" type="button" onclick="openLesson('+x.id+')">فتح الدرس</button><button class="ghost" type="button" onclick="startQuizFor('+x.id+')">اختبرني الآن</button></div></article>';
+    }
+    box.innerHTML='<div style="display:grid;gap:10px">'+html+'</div>';
+    var avg=rows.length?Math.round(rows.reduce(function(a,x){return a+x.mastery;},0)/rows.length):0;
+    var due=rows.filter(function(x){return x.due>0;}).length;
+    var strong=rows.filter(function(x){return x.mastery>=90;}).length;
     summary.innerHTML='<div class="kpi"><b>'+rows.length+'</b><span>درس</span></div><div class="kpi"><b>'+avg+'%</b><span>متوسط الإتقان</span></div><div class="kpi"><b>'+due+'</b><span>يحتاج تكرار</span></div><div class="kpi"><b>'+strong+'</b><span>إتقان 90%+</span></div>';
     toast('تم فتح خريطة الإتقان ✅');
-  }catch(e){console.error(e);toast('حدث خطأ أثناء فتح الخريطة ⚠️');}
-}
+  }catch(e){console.error(e);toast('خطأ الخريطة: '+(e&&e.message?e.message:'غير معروف'));}}
+
 function renderMasteryRows(rows){
   return '<div style="display:grid;gap:10px">'+rows.map(function(x){
     const p=Math.max(0,Math.min(100,x.mastery||0));
