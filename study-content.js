@@ -34,9 +34,12 @@
     const scored=ps.map(p=>({p,s:scoreTitle(l.title,p.text)})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s);
     if(!scored.length) return [];
     const best=scored[0].s;
-    const anchors=scored.filter(x=>x.s>=Math.max(1,best-1)).map(x=>x.p.page).sort((a,b)=>a-b);
-    const lo=Math.max(1,(anchors[0]||1)-1), hi=Math.min(160,(anchors[anchors.length-1]||anchors[0]||1)+2);
-    return ps.filter(p=>p.page>=lo&&p.page<=hi);
+    const anchors=scored.filter(x=>x.s===best).slice(0,6).map(x=>x.p.page).sort((a,b)=>a-b);
+    const ranges=[];
+    anchors.forEach(p=>ranges.push([Math.max(1,p-1),Math.min(160,p+2)]));
+    const selected=new Set();
+    ranges.forEach(r=>ps.filter(p=>p.page>=r[0]&&p.page<=r[1]).forEach(p=>selected.add(p.page)));
+    return ps.filter(p=>selected.has(p.page));
   }
   function clean(s){return s.replace(/\s+/g,' ').trim()}
   function sentences(text){return text.split(/(?<=[.!؟:؛])\s+/).map(clean).filter(x=>x.length>=25&&x.length<=360)}
