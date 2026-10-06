@@ -1,0 +1,67 @@
+name: fix-navigation-pages
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Harden page navigation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path("index.html")
+          s=p.read_text(encoding="utf-8")
+          old="""function openNightReview(){
+  setView('nightReview');
+  const box=$('#nightContent');if(!box)return;
+  const stats=Future100Learning.stats(), wrong=Future100Learning.mistakes().length, due=Future100Learning.due().length;"""
+          new="""function openNightReview(){
+  try{
+    setView('nightReview');
+    const box=$('#nightContent');if(!box){toast('صفحة مراجعة ليلة الامتحان غير جاهزة ⚠️');return;}
+    const L=window.Future100Learning;
+    if(!L){box.innerHTML='<div class="empty">نظام التعلم لم يكتمل تحميله. أعد تحميل الصفحة.</div>';return;}
+    const stats=L.stats(), wrong=L.mistakes().length, due=L.due().length;"""
+          s=s.replace(old,new)
+          s=s.replace("""  box.innerHTML='<div class="nightHero"><h2>🔥 مراجعة ليلة الامتحان</h2>""","""    box.innerHTML='<div class="nightHero"><h2>🔥 مراجعة ليلة الامتحان</h2>""",1)
+          old_end="""<div class="warning">🚨 القاعدة: لا تبدأ موضوعاً جديداً ليلة الامتحان؛ ركز على الأخطاء والمستحق والتعاريف والعلل والتعداد.</div>';
+}
+let nightExam="""
+          new_end="""<div class="warning">🚨 القاعدة: لا تبدأ موضوعاً جديداً ليلة الامتحان؛ ركز على الأخطاء والمستحق والتعاريف والعلل والتعداد.</div>';
+  }catch(e){console.error(e);toast('حدث خطأ في فتح مراجعة ليلة الامتحان ⚠️');}
+}
+let nightExam="""
+          s=s.replace(old_end,new_end)
+          old2="""function openPerformance(){
+  setView('performance');
+  const box=$('#performanceContent');if(!box)return;
+  box.innerHTML="""
+          new2="""function openPerformance(){
+  try{
+    setView('performance');
+    const box=$('#performanceContent');if(!box){toast('صفحة الأداء غير جاهزة ⚠️');return;}
+    box.innerHTML="""
+          s=s.replace(old2,new2)
+          s=s.replace("""  box.innerHTML='<div class="analyticsGrid"><div class="analyticsCard">""","""    box.innerHTML='<div class="analyticsGrid"><div class="analyticsCard">""",1)
+          marker="""<button class="ghost" onclick="openMasteryMap()">🗺️ خريطة الـ62</button></div>';
+}
+function openNightReview"""
+          repl="""<button class="ghost" onclick="openMasteryMap()">🗺️ خريطة الـ62</button></div>';
+  }catch(e){console.error(e);toast('حدث خطأ في فتح صفحة الأداء ⚠️');}
+}
+function openNightReview"""
+          s=s.replace(marker,repl)
+          p.write_text(s,encoding="utf-8")
+          PY
+      - name: Commit
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Harden all major page navigation handlers"
+          git push
