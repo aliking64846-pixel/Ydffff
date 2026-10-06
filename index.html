@@ -191,34 +191,110 @@ async function startMasteryMission(){
   toast('بدأت مهمة الإتقان: 20 سؤالاً، والأضعف أولاً 🎯');
 }
 function openMasteryMap(){
+  var page=document.getElementById('masteryMap');
+  var box=document.getElementById('masteryMapContent');
+  var summary=document.getElementById('masterySummary');
+
+  if(!page||!box||!summary){
+    var t=document.getElementById('toast');
+    if(t){t.textContent='خريطة الإتقان غير موجودة في الصفحة ⚠️';t.classList.add('show');}
+    return false;
+  }
+
   try{
     document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
-    var page=document.getElementById('masteryMap');
-    var box=document.getElementById('masteryMapContent');
-    var summary=document.getElementById('masterySummary');
-    if(!page||!box||!summary){toast('عناصر خريطة الإتقان غير موجودة ⚠️');return;}
     page.classList.add('active');
-    box.innerHTML='<div class="empty">⏳ جاري فتح الخريطة…</div>';
+
+    var list=Array.isArray(window.Future100LessonList)?window.Future100LessonList:
+             (typeof lessons!=='undefined'&&Array.isArray(lessons)?lessons:[]);
+
+    if(!list.length){
+      box.innerHTML='<div class="empty">لم يتم تحميل الدروس بعد. أعد تحميل الصفحة مرة واحدة.</div>';
+      summary.innerHTML='<div class="kpi"><b>0</b><span>درس محمّل</span></div>';
+      return false;
+    }
+
     var rows=[];
-    for(var i=0;i<lessons.length;i++){
-      var l=lessons[i], s={total:0,mastery:0,due:0,mistakes:0,ministerial:0};
-      if(window.Future100Learning && typeof window.Future100Learning.lessonStats==='function'){
-        try{s=window.Future100Learning.lessonStats(l.id)||s;}catch(_){}
-      }
-      rows.push({id:l.id,subject:l.subject,title:l.title,total:Number(s.total)||0,mastery:Number(s.mastery)||0,due:Number(s.due)||0,mistakes:Number(s.mistakes)||0,ministerial:Number(s.ministerial)||0});
-    }
+    list.forEach(function(l){
+      var s={total:0,mastery:0,due:0,mistakes:0,ministerial:0};
+      try{
+        if(window.Future100Learning && typeof window.Future100Learning.lessonStats==='function'){
+          var got=window.Future100Learning.lessonStats(Number(l.id));
+          if(got && typeof got==='object')s=got;
+        }
+      }catch(err){ console.warn('lessonStats:',err); }
+
+      rows.push({
+        id:Number(l.id)||0,
+        subject:String(l.subject||''),
+        title:String(l.title||''),
+        total:Number(s.total)||0,
+        mastery:Number(s.mastery)||0,
+        due:Number(s.due)||0,
+        mistakes:Number(s.mistakes)||0,
+        ministerial:Number(s.ministerial)||0
+      });
+    });
+
     var html='';
-    for(var j=0;j<rows.length;j++){
-      var x=rows[j],p=Math.max(0,Math.min(100,x.mastery)),label=p>=90?'🟢 ممتاز':p>=70?'🟡 جيد':'🔴 يحتاج دراسة';
-      html+='<article class="lesson" style="padding:14px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><div><span class="tag">'+x.id+' • '+x.subject+'</span><h3 style="margin:7px 0">'+x.title+'</h3></div><b style="font-size:22px">'+p+'%</b></div><div class="progress"><div class="bar" style="width:'+p+'%"></div></div><div class="small" style="margin-top:8px">'+label+' • '+x.total+' سؤال • '+x.due+' مستحق للتكرار • '+x.mistakes+' خطأ'+(x.ministerial?' • '+x.ministerial+' وزاري موثّق':'')+'</div><div class="actions"><button class="primary" type="button" onclick="openLesson('+x.id+')">فتح الدرس</button><button class="ghost" type="button" onclick="startQuizFor('+x.id+')">اختبرني الآن</button></div></article>';
-    }
+    rows.forEach(function(x){
+      var p=Math.max(0,Math.min(100,Math.round(x.mastery)));
+      var label=p>=90?'🟢 ممتاز':p>=70?'🟡 جيد':'🔴 يحتاج دراسة';
+      html+='<article class="lesson" style="padding:14px">'+
+        '<div style="display:flex;justify-content:space-between;gap:8px;align-items:center">'+
+          '<div><span class="tag">'+x.id+' • '+x.subject+'</span><h3 style="margin:7px 0">'+x.title+'</h3></div>'+
+          '<b style="font-size:22px">'+p+'%</b>'+
+        '</div>'+
+        '<div class="progress"><div class="bar" style="width:'+p+'%"></div></div>'+
+        '<div class="small" style="margin-top:8px">'+label+' • '+x.total+' سؤال • '+x.due+' مستحق للتكرار • '+x.mistakes+' خطأ'+
+          (x.ministerial?' • '+x.ministerial+' وزاري موثّق':'')+
+        '</div>'+
+        '<div class="actions">'+
+          '<button class="primary" type="button" data-map-open="'+x.id+'">فتح الدرس</button>'+
+          '<button class="ghost" type="button" data-map-quiz="'+x.id+'">اختبرني الآن</button>'+
+        '</div>'+
+      '</article>';
+    });
+
     box.innerHTML='<div style="display:grid;gap:10px">'+html+'</div>';
-    var avg=rows.length?Math.round(rows.reduce(function(a,x){return a+x.mastery;},0)/rows.length):0;
+
+    box.querySelectorAll('[data-map-open]').forEach(function(b){
+      b.addEventListener('click',function(){
+        var id=Number(b.getAttribute('data-map-open'));
+        if(typeof window.openLesson==='function')window.openLesson(id);
+      });
+    });
+    box.querySelectorAll('[data-map-quiz]').forEach(function(b){
+      b.addEventListener('click',function(){
+        var id=Number(b.getAttribute('data-map-quiz'));
+        if(typeof window.startQuizFor==='function')window.startQuizFor(id);
+      });
+    });
+
+    var totalMastery=rows.reduce(function(a,x){return a+x.mastery;},0);
+    var avg=rows.length?Math.round(totalMastery/rows.length):0;
     var due=rows.filter(function(x){return x.due>0;}).length;
     var strong=rows.filter(function(x){return x.mastery>=90;}).length;
-    summary.innerHTML='<div class="kpi"><b>'+rows.length+'</b><span>درس</span></div><div class="kpi"><b>'+avg+'%</b><span>متوسط الإتقان</span></div><div class="kpi"><b>'+due+'</b><span>يحتاج تكرار</span></div><div class="kpi"><b>'+strong+'</b><span>إتقان 90%+</span></div>';
-    toast('تم فتح خريطة الإتقان ✅');
-  }catch(e){console.error(e);toast('خطأ الخريطة: '+(e&&e.message?e.message:'غير معروف'));}}
+
+    summary.innerHTML=
+      '<div class="kpi"><b>'+rows.length+'</b><span>درس</span></div>'+
+      '<div class="kpi"><b>'+avg+'%</b><span>متوسط الإتقان</span></div>'+
+      '<div class="kpi"><b>'+due+'</b><span>يحتاج تكرار</span></div>'+
+      '<div class="kpi"><b>'+strong+'</b><span>إتقان 90%+</span></div>';
+
+    var toastEl=document.getElementById('toast');
+    if(toastEl){toastEl.textContent='تم فتح خريطة الإتقان ✅';toastEl.classList.add('show');setTimeout(function(){toastEl.classList.remove('show');},2200);}
+    return true;
+  }catch(err){
+    console.error('Future100 mastery map error:',err);
+    box.innerHTML='<div class="empty">تعذر عرض الخريطة حالياً. حاول إعادة تحميل الصفحة.</div>';
+    var msg=err&&err.message?err.message:'خطأ غير معروف';
+    var toastEl2=document.getElementById('toast');
+    if(toastEl2){toastEl2.textContent='خطأ خريطة الإتقان: '+msg;toastEl2.classList.add('show');}
+    return false;
+  }
+}
+window.openMasteryMap=openMasteryMap;
 
 function renderMasteryRows(rows){
   return '<div style="display:grid;gap:10px">'+rows.map(function(x){
