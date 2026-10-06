@@ -1,6 +1,6 @@
 /* Future100 Content Engine — مصدره نص الكتاب المنشور داخل المستودع */
 (function(){
-  const CONTENT_VERSION='3.0.0';
+  const CONTENT_VERSION='3.1.0';
   let cache={};
   const files=['front','geography','history','national'];
 
@@ -25,7 +25,7 @@
     return 'front';
   }
   function scoreTitle(title,text){
-    const words=norm(title).split(' ').filter(x=>x.length>2);
+    const words=norm(title+' '+String(text||'').slice(0,180)).split(' ').filter(x=>x.length>2);
     const n=norm(text);
     return words.reduce((s,w)=>s+(n.includes(w)?1:0),0);
   }
@@ -60,7 +60,9 @@
   function makeContent(l,ps){
     const picked=pickPages(l,ps);
     const raw=clean(picked.map(x=>x.text).join(' '));
-    const ss=sentences(raw);
+    const sourceMissing=raw.length<120;
+    const usableRaw=sourceMissing?clean(l.summary):raw;
+    const ss=sentences(usableRaw);
     const info=[l.summary];
     const defs=[],reasons=[],enumers=[],blanks=[],tf=[];
     const chapterQuestions=extractQuestionBlocks(picked);
@@ -92,6 +94,19 @@
       return words.some(w=>t.includes(w));
     }).slice(0,12).map(x=>({question:x.q,answer:x.a,type:x.type||'تدريب'}));
     for(const q of qbank) chapterQuestions.push(q);
+    let fallback=false;
+    if(chapterQuestions.length<2){
+      fallback=true;
+      chapterQuestions.push(
+        {question:'ما موضوع درس «'+l.title+'»؟',answer:l.summary,source:'تدريب تثبيت — ملخص الدرس'},
+        {question:'ما الفكرة الأساسية في درس «'+l.title+'»؟',answer:l.summary,source:'تدريب تثبيت — ملخص الدرس'}
+      );
+    }
+    if(defs.length===0) defs.push({question:'ما المقصود بموضوع درس «'+l.title+'»؟',answer:l.summary,source:'تدريب تثبيت — ملخص الدرس'});
+    if(reasons.length===0) reasons.push({question:'علل أهمية دراسة «'+l.title+'».',answer:'لفهم الأفكار والمعلومات الأساسية الواردة في هذا الدرس وربطها بالأسئلة.',source:'تدريب تثبيت — ليس وزارياً'});
+    if(enumers.length===0) enumers.push({question:'اذكر أهم فكرة في درس «'+l.title+'».',answer:[l.summary],source:'تدريب تثبيت — ليس وزارياً'});
+    if(blanks.length===0) blanks.push({question:'أكمل: يتناول هذا الدرس موضوع ______.',answer:l.title,source:'تدريب تثبيت — ليس وزارياً'});
+    if(tf.length===0) tf.push({question:'صح أم خطأ: يتناول درس «'+l.title+'» موضوعاً من موضوعات الاجتماعيات.',answer:true,correction:'صح.',source:'تدريب تثبيت — ليس وزارياً'});
     return {
       version:CONTENT_VERSION,lessonId:l.id,sourceFile:'book-'+sourceFor(l)+'.txt',
       pages:[...new Set(picked.map(x=>x.page))],info,
@@ -101,7 +116,8 @@
       trueFalse:unique(tf,x=>norm(x.question)).slice(0,8),
       chapterQuestions:unique(chapterQuestions,x=>norm(x.question)).slice(0,20),
       ministerial:unique(ministerial,x=>norm(x.question)).slice(0,50),
-      raw:raw.slice(0,7000)
+      fallback,sourceMissing,
+      raw:usableRaw.slice(0,7000)
     };
   }
   function typeLabel(k){return ({definitions:'📌 تعريفات',reasons:'❓ علل وفسر',enumerate:'🔢 عدد/اذكر',blanks:'✏️ فراغات',trueFalse:'✅❌ صح وخطأ',chapterQuestions:'📝 أسئلة الدرس',ministerial:'🏆 وزاريات'})[k]||k}
