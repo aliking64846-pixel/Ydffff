@@ -43,7 +43,7 @@
   function mistakes(){return Object.values(db.mistakes).sort((a,b)=>(b.wrong-a.wrong)||(a.mastery-b.mastery));}
   function allMinisterial(){
     const out=[];
-    if(window.Future100MinisterialBank?.all) return window.Future100MinisterialBank.all().map((q,i)=>({...q,id:q.id||'m_'+i,category:'وزاريات',verified:true,type:'وزاري'}));
+    if(window.Future100MinisterialBank?.all) return window.Future100MinisterialBank.all().filter(q=>q.verified===true).map((q,i)=>({...q,id:q.id||'m_'+i,category:'وزاريات',verified:true,type:'وزاري'}));
     if(typeof lessons==='undefined') return out;
     lessons.forEach(l=>{
       const c=window.lessonContentCache&&window.lessonContentCache[l.id];
