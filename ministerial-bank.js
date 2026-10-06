@@ -231,6 +231,110 @@
       sourceId:'social_2025_r1_detail', sourceLabel:'تفريغ سؤال وزاري 2025 الدور الأول مع الحل المنشور',
       sourceUrl:'https://yudrik.com/ar/blog/social_3rd_intermediate_2025_round1', verified:true, type:'وزاري'
     }
+    {
+      id:'min_2026_r1_hammr_marsh',
+      question:'عرّف هور الحمار.',
+      answer:'هو أحد الأهوار الكبرى المهمة التي تقع في منطقة السهل الرسوبي في جنوب العراق، وتمتد أراضيه بين محافظتي البصرة وذي قار.',
+      subject:'الجغرافية', lessonId:13, chapter:'الخصائص الطبيعية لجغرافية العراق', year:2026, round:'الدور الأول',
+      sourceId:'social_2026_r1', sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/ar/blog/social_3rd_intermediate_2026_round1', verified:true, type:'وزاري'
+    },
+    {
+      id:'min_2026_r1_halgurd',
+      question:'عرّف هلكرد.',
+      answer:'هي أعلى قمة جبلية ويبلغ ارتفاعها أكثر من 3600م فوق مستوى سطح البحر ضمن سلسلة جبال حصاروست قرب الحدود العراقية الإيرانية.',
+      subject:'الجغرافية', lessonId:6, chapter:'الخصائص الطبيعية لجغرافية العراق', year:2026, round:'الدور الأول',
+      sourceId:'social_2026_r1', sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/ar/blog/social_3rd_intermediate_2026_round1', verified:true, type:'وزاري'
+    },
+    {
+      id:'min_2026_r1_suleiman',
+      question:'عرّف سليمان القانوني.',
+      answer:'هو السلطان العثماني الذي استطاع احتلال بغداد عام 1534م بعد انتصاره على الصفويين الذين كانوا يسيطرون على العراق.',
+      subject:'التاريخ', lessonId:31, chapter:'العراق في العهد العثماني', year:2026, round:'الدور الأول',
+      sourceId:'social_2026_r1', sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/ar/blog/social_3rd_intermediate_2026_round1', verified:true, type:'وزاري'
+    },
+    {
+      id:'min_2026_r1_chaldiran',
+      question:'عرّف جالديران.',
+      answer:'هي المعركة التي حدثت بين العثمانيين والصفويين عام 1514م، وانتصر فيها العثمانيون واحتلوا عاصمة الصفويين تبريز.',
+      subject:'التاريخ', lessonId:31, chapter:'العراق في العهد العثماني', year:2026, round:'الدور الأول',
+      sourceId:'social_2026_r1', sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/ar/blog/social_3rd_intermediate_2026_round1', verified:true, type:'وزاري'
+    },
+    {
+      id:'min_2026_r1_stanley_maude',
+      question:'عرّف الجنرال ستانلي مود.',
+      answer:'هو الجنرال البريطاني والقائد العام للقوات البريطانية في العراق الذي استطاع احتلال بغداد في 11 آذار 1917م بعد معارك مع العثمانيين.',
+      subject:'التاريخ', lessonId:40, chapter:'العراق في أثناء الحرب العالمية الأولى وبعدها', year:2026, round:'الدور الأول',
+      sourceId:'social_2026_r1', sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/ar/blog/social_3rd_intermediate_2026_round1', verified:true, type:'وزاري'
+    },
+    {
+      id:'min_2026_r1_annual_plants',
+      question:'أكمل: النباتات الحولية هي نباتات ______ تنمو خلال الموسم الملائم لنموها.',
+      answer:'فصلية (أو صحراوية فصلية).',
+      subject:'الجغرافية', lessonId:12, chapter:'الخصائص الطبيعية لجغرافية العراق', year:2026, round:'الدور الأول',
+      sourceId:'social_2026_r1', sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/ar/blog/social_3rd_intermediate_2026_round1', verified:true, type:'وزاري'
+    },
+    {
+      id:'min_2026_r1_shuaiba',
+      question:'أكمل: دارت معركة الشعيبة بين العثمانيين بقيادة ______ والبريطانيين.',
+      answer:'سليمان العسكري.',
+      subject:'التاريخ', lessonId:35, chapter:'العراق في العهد العثماني', year:2026, round:'الدور الأول',
+      sourceId:'social_2026_r1', sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/ar/blog/social_3rd_intermediate_2026_round1', verified:true, type:'وزاري'
+    },
+    {
+      id:'min_2026_r1_abbas',
+      question:'أكمل: وقع الاختيار على ______ وهو من العائلة الهاشمية المالكة ليكون وصياً جديداً على عرش العراق بعد هروب الوصي عبد الإله إلى البصرة.',
+      answer:'الشريف شرف.',
+      subject:'التاريخ', lessonId:47, chapter:'العراق بعد تأسيس الدولة', year:2026, round:'الدور الأول',
+      sourceId:'social_2026_r1', sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/ar/blog/social_3rd_intermediate_2026_round1', verified:true, type:'وزاري'
+    },
+    {
+      id:'min_2026_r1_ports',
+      question:'أكمل: هناك العديد من الموانئ البحرية التي تطل على شط العرب منها ميناءا ______ و ______.',
+      answer:'أبو فلوس والمعقل.',
+      subject:'الجغرافية', lessonId:15, chapter:'الخصائص الطبيعية لجغرافية العراق', year:2026, round:'الدور الأول',
+      sourceId:'social_2026_r1', sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/en/blog/social_3rd_intermediate_2026_round1', verified:true, type:'وزاري'
+    },
+    {
+      id:'min_2026_r1_rice',
+      question:'أكمل: احتلت محافظة ______ المرتبة الأولى في زراعة الرز.',
+      answer:'النجف (النجف الأشرف).',
+      subject:'الجغرافية', lessonId:23, chapter:'الخصائص البشرية لجغرافية العراق', year:2026, round:'الدور الأول',
+      sourceId:'social_2026_r1', sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/en/blog/social_3rd_intermediate_2026_round1', verified:true, type:'وزاري'
+    },
+    {
+      id:'min_2026_r1_durat_taj',
+      question:'أكمل: أطلق على الهند بسبب أهميتها الاقتصادية لبريطانيا لقب ______.',
+      answer:'درة التاج (أو درة التاج البريطاني).',
+      subject:'التاريخ', lessonId:35, chapter:'العراق في العهد العثماني', year:2026, round:'الدور الأول',
+      sourceId:'social_2026_r1', sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/en/blog/social_3rd_intermediate_2026_round1', verified:true, type:'وزاري'
+    },
+    {
+      id:'min_2026_r1_animal_wealth',
+      question:'عدّد أهمية الثروة الحيوانية.',
+      answer:'1- مصدر مهم في الدخل القومي. 2- مادة غذائية أساسية للسكان كاللحوم والحليب وبيض المائدة. 3- رفد الصناعات بمواد أولية كالجلود والأصواف والشعر. 4- يستعمل بعضها واسطة للنقل في المناطق الصحراوية والوعرة. 5- يستفاد من مخلفاتها كأسمدة عضوية لزيادة خصوبة التربة.',
+      subject:'الجغرافية', lessonId:23, chapter:'الخصائص البشرية لجغرافية العراق', year:2026, round:'الدور الأول',
+      sourceId:'social_2026_r1', sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/en/blog/social_3rd_intermediate_2026_round1', verified:true, type:'وزاري'
+    },
+    {
+      id:'min_2026_r1_medhat_school',
+      question:'صح أم خطأ: أول مدرسة أسسها الوالي مدحت باشا هي المدرسة الرشيدية العسكرية، وكان يُقبل بها الطلبة المتخرجون من المدارس الدينية.',
+      answer:'صح.',
+      subject:'التاريخ', lessonId:34, chapter:'العراق في العهد العثماني', year:2026, round:'الدور الأول',
+      sourceId:'social_2026_r1', sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/en/blog/social_3rd_intermediate_2026_round1', verified:true, type:'وزاري'
+    }
   ];
 
   window.Future100MinisterialBank = {
