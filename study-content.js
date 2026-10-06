@@ -39,26 +39,72 @@
   }
   function clean(s){return s.replace(/\s+/g,' ').trim()}
   function sentences(text){return text.split(/(?<=[.!؟:؛])\s+/).map(clean).filter(x=>x.length>=25&&x.length<=360)}
+  function unique(items,key){
+    const seen=new Set(); return items.filter(x=>{const k=key(x);if(!k||seen.has(k))return false;seen.add(k);return true;});
+  }
+  function extractQuestionBlocks(picked){
+    const out=[];
+    for(const p of picked){
+      const t=clean(p.text);
+      const m=t.match(/(?:الأسئل[ةـ]|الاسئله)([\\s\\S]{0,12000})/);
+      if(!m) continue;
+      const block=m[1];
+      const re=/(?:س\\s*\\.?\\s*|س\\.?\\s*\\d+\\s*\\.?\\s*)([^؟\\n]{8,240}؟?)/g;
+      let q; while((q=re.exec(block))){
+        const question=clean(q[1]).replace(/^[:.\\- ]+/,'');
+        if(question.length>=8) out.push({question,answer:'',page:p.page});
+      }
+    }
+    return unique(out,x=>norm(x.question)).slice(0,30);
+  }
   function makeContent(l,ps){
     const picked=pickPages(l,ps);
     const raw=clean(picked.map(x=>x.text).join(' '));
     const ss=sentences(raw);
-    const info=[];
+    const info=[l.summary];
     const defs=[],reasons=[],enumers=[],blanks=[],tf=[];
-    info.push(l.summary);
-    ss.filter(x=>/\b(هو|هي|يعرف|تعرف|يقصد|المقصود|عبارة عن|تتكون|يتكون)\b/.test(x)).slice(0,5).forEach(x=>defs.push({question:'ما المقصود بـ '+l.title+'؟',answer:x,source:'الكتاب'}));
-    ss.filter(x=>/(بسبب|لان|لأن|نظرا|نتيجة|يعود ذلك|يؤدي الى|تؤدي الى)/.test(x)).slice(0,6).forEach(x=>reasons.push({question:'علل/فسر: '+x.slice(0,Math.min(100,x.length))+'…',answer:x,source:'الكتاب'}));
-    const numbered=raw.split(/\n+/).map(clean).filter(x=>/^\d+\s+/.test(x)&&x.length<320);
-    if(numbered.length) enumers.push({question:'اذكر ما ورد في هذا الجزء من الدرس.',answer:numbered.slice(0,8),source:'الكتاب'});
-    ss.slice(0,5).forEach(x=>{const words=x.split(' ');if(words.length>=8) blanks.push({question:x.replace(words[Math.floor(words.length/2)],'________'),answer:words[Math.floor(words.length/2)],source:'مستخرج من نص الكتاب'});});
-    ss.filter(x=>!/(نشاط|خريطة|شكل|صفحة)/.test(x)).slice(0,6).forEach(x=>tf.push({question:x,answer:true,correction:x,source:'الكتاب'}));
-    const q=(typeof quizBank!=='undefined'?quizBank:[]).filter(x=>{
-      const t=norm((x.q||'')+' '+(x.a||'')+' '+l.title);
-      return norm(l.title).split(' ').filter(w=>w.length>3).some(w=>t.includes(w));
-    }).slice(0,12);
-    return {version:CONTENT_VERSION,lessonId:l.id,sourceFile:'book-'+sourceFor(l)+'.txt',pages:picked.map(x=>x.page),info,definitions:defs,reasons,enumerate:enumers,blanks,trueFalse:tf,chapterQuestions:q.map(x=>({question:x.q,answer:x.a,type:x.type||'تدريب من الكتاب'})),raw:raw.slice(0,7000)};
+    const chapterQuestions=extractQuestionBlocks(picked);
+    const ministerial=[];
+    ss.filter(x=>/(هو|هي|يعرف|تعرف|يقصد|المقصود|عبارة عن|تتكون|يتكون|يطلق على)/.test(x))
+      .slice(0,8).forEach(x=>{
+        const term=(l.title||'المفهوم').replace(/^(ما|تعريف|درس)\\s+/,'');
+        defs.push({question:'ما المقصود بـ '+term+'؟',answer:x,source:'الكتاب'});
+      });
+    ss.filter(x=>/(بسبب|لان|لأن|نظرا|نتيجة|يعود ذلك|يؤدي الى|تؤدي الى|يسبب|يسهم)/.test(x))
+      .slice(0,8).forEach(x=>reasons.push({question:'علل/فسر: '+x,answer:x,source:'الكتاب'}));
+    const listLines=raw.split(/(?=\\b(?:[1-9]|10|11|12|13|14|15)[.)]\\s)/).map(clean)
+      .filter(x=>/^\\d+[.)]\\s/.test(x)&&x.length<500);
+    if(listLines.length>=2) enumers.push({question:'عدد/اذكر ما يأتي:',answer:listLines.slice(0,10).map(x=>x.replace(/^\\d+[.)]\\s*/,'')),source:'الكتاب'});
+    ss.slice(0,8).forEach(x=>{
+      const words=x.split(' ').filter(Boolean);
+      if(words.length>=9){
+        const idx=Math.min(words.length-2,Math.max(2,Math.floor(words.length*.55)));
+        const answer=words[idx];
+        blanks.push({question:x.replace(answer,'________'),answer,source:'مستخرج من نص الكتاب'});
+      }
+    });
+    ss.filter(x=>!/(نشاط|خريطة|شكل|صفحة|معلومة إثرائية)/.test(x)).slice(0,8).forEach(x=>{
+      tf.push({question:'صح أم خطأ: '+x,answer:true,correction:x,source:'الكتاب'});
+    });
+    const qbank=(typeof quizBank!=='undefined'?quizBank:[]).filter(x=>{
+      const t=norm((x.q||'')+' '+(x.a||''));
+      const words=norm(l.title).split(' ').filter(w=>w.length>3);
+      return words.some(w=>t.includes(w));
+    }).slice(0,12).map(x=>({question:x.q,answer:x.a,type:x.type||'تدريب'}));
+    for(const q of qbank) chapterQuestions.push(q);
+    return {
+      version:CONTENT_VERSION,lessonId:l.id,sourceFile:'book-'+sourceFor(l)+'.txt',
+      pages:[...new Set(picked.map(x=>x.page))],info,
+      definitions:unique(defs,x=>norm(x.question)+'|'+norm(x.answer)).slice(0,8),
+      reasons:unique(reasons,x=>norm(x.answer)).slice(0,8),
+      enumerate:enumers,blanks:unique(blanks,x=>norm(x.question)).slice(0,8),
+      trueFalse:unique(tf,x=>norm(x.question)).slice(0,8),
+      chapterQuestions:unique(chapterQuestions,x=>norm(x.question)).slice(0,20),
+      ministerial:unique(ministerial,x=>norm(x.question)).slice(0,20),
+      raw:raw.slice(0,7000)
+    };
   }
-  function typeLabel(k){return ({definitions:'📌 تعريفات',reasons:'❓ علل وفسر',enumerate:'🔢 عدد/اذكر',blanks:'✏️ فراغات',trueFalse:'✅❌ صح وخطأ',chapterQuestions:'📝 أسئلة الدرس'})[k]||k}
+  function typeLabel(k){return ({definitions:'📌 تعريفات',reasons:'❓ علل وفسر',enumerate:'🔢 عدد/اذكر',blanks:'✏️ فراغات',trueFalse:'✅❌ صح وخطأ',chapterQuestions:'📝 أسئلة الدرس',ministerial:'🏆 وزاريات'})[k]||k}
   function esc(s){return String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
   async function get(l){
     const key=l.subject;
@@ -73,7 +119,7 @@
     try{
       const c=await get(l);
       window.lessonContentCache=window.lessonContentCache||{}; window.lessonContentCache[id]=c;
-      const sections=['definitions','reasons','enumerate','blanks','trueFalse','chapterQuestions'];
+      const sections=['definitions','reasons','enumerate','blanks','trueFalse','chapterQuestions','ministerial'];
       box.innerHTML='<div class="lessonHead"><span class="tag">'+esc(l.subject)+' • '+esc(l.chapter)+'</span><h2>'+esc(l.title)+'</h2><p>'+esc(l.summary)+'</p><div class="sourceNote">📚 المحتوى مستخرج من الكتاب المنشور داخل المشروع • الصفحات: '+c.pages.join('، ')+'</div></div>'+
       '<div class="lessonBody"><h3>🧠 معلومات قصيرة</h3><div class="fact">'+c.info.map(esc).join('<br><br>')+'</div>'+
       sections.map(k=>'<section class="contentSection"><h3>'+typeLabel(k)+'</h3>'+(c[k]&&c[k].length?c[k].map((x,i)=>'<article class="studyItem"><b>'+(i+1)+'. '+esc(x.question||'')+'</b><div class="studyAnswer">'+esc(Array.isArray(x.answer)?x.answer.join(' • '):x.answer||'')+'</div></article>').join(''):'<div class="empty">سيتم إدخال هذا النوع بعد تدقيقه.</div>')+'</section>').join('')+
@@ -84,7 +130,7 @@
   window.startRichQuiz=function(id){
     const l=lessons.find(x=>x.id===id), c=window.lessonContentCache?.[id];
     if(!l||!c){openRich(id);return}
-    const qs=[...(c.chapterQuestions||[]),...(c.definitions||[]),...(c.reasons||[]),...(c.enumerate||[]),...(c.blanks||[]),...(c.trueFalse||[])].slice(0,12);
+    const qs=[...(c.chapterQuestions||[]),...(c.ministerial||[]),...(c.definitions||[]),...(c.reasons||[]),...(c.enumerate||[]),...(c.blanks||[]),...(c.trueFalse||[])].slice(0,15);
     if(!qs.length){toast('لا توجد أسئلة كافية لهذا الدرس بعد');return}
     setView('quiz'); renderQuiz(qs.map(x=>({q:x.question,a:Array.isArray(x.answer)?x.answer.join('، '):x.answer,type:x.type||'تدريب من الكتاب'})));
   };
