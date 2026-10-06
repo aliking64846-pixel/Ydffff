@@ -5,7 +5,7 @@
   const KEY='future100_learning_v2';
   const old=JSON.parse(localStorage.getItem(KEY)||'{}');
   const db={
-    version:4,
+    version:5,
     questions:old.questions||{},
     mistakes:old.mistakes||{},
     reviews:old.reviews||{},
@@ -41,6 +41,11 @@
     return Object.values(db.questions).filter(x=>x.nextReview<=t && (!filter||filter(x))).sort((a,b)=>(a.mastery-b.mastery)||(a.nextReview-b.nextReview));
   }
   function mistakes(){return Object.values(db.mistakes).sort((a,b)=>(b.wrong-a.wrong)||(a.mastery-b.mastery));}
+  function masteryPercent(){
+    const arr=allMinisterial(); if(!arr.length) return 0;
+    const vals=arr.map(q=>(db.questions[idOf(q)]||{}).mastery||0);
+    return Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+  }
   function scoreFor(q){
     const x=db.questions[idOf(q)];
     if(!x) return 0;
@@ -72,13 +77,15 @@
     return out;
   }
   window.Future100Learning={
-    version:3,
+    version:5,
     record,
     ensure,
     due,
     mistakes,
     stats:()=>({...db.stats}),
     mastery:()=>Object.values(db.questions),
+    masteryPercent,
+    ministerialCount:()=>allMinisterial().length,
     ministerial:allMinisterial,
     smartMinisterial:smartMinisterialPool,
     weakMinisterial,
