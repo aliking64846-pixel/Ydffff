@@ -366,6 +366,12 @@
   ];
 
   window.Future100MinisterialBank = {
+    sourceQuality: {
+      rule:'verified question requires the paper to be identified by year/round and the question text to be matched; answer sources are treated separately.',
+      crossCheckedPapers:['2024 الدور الأول','2024 الدور الثاني','2024 الدور الثالث','2022 الدور الأول'],
+      lastAudit:'2026-10-06'
+    },
+
     // سجل تدقيق الأوراق: لا يعني اكتمال تفريغ الأسئلة، بل يثبت وجود الورقة في مصدرين مستقلين.
     paperAudit: [
       {year:2022,round:'الدور الأول',sources:['https://ntallem.com/wasari/wsari3mut2022d1.html']},
@@ -383,7 +389,7 @@
     verifiedByPaper:true,
     verificationPolicy:'لا يدخل السؤال كوزاري موثوق إلا إذا كان نصه مثبتاً من ورقة امتحانية منشورة ومربوطاً بمصدرها؛ الأرشيف غير المفروغ يبقى خارج الاختبار.',
     coverageVerified: {2024:['تمهيدي','الدور الأول','الدور الثاني','الدور الثالث']},
-    version:'2.0.0',
+    version:'2.1.0',
     sources,
     questions,
     all(){ return questions.slice(); },
