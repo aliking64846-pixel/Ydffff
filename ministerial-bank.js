@@ -5,6 +5,9 @@
 (function(){
   const sources = [
     {id:'social_2024_pre',subject:'الاجتماعيات',year:2024,round:'تمهيدي',provider:'ملازمنا',url:'https://mlazemna.com/tm24gt3/'},
+    {id:'social_2024_pre_detail',subject:'الاجتماعيات',year:2024,round:'تمهيدي',provider:'يُدرك',url:'https://yudrik.com/ar/blog/social_3rd_intermediate_2024_preliminary'},
+    {id:'social_2024_r1_detail',subject:'الاجتماعيات',year:2024,round:'الدور الأول',provider:'يُدرك',url:'https://yudrik.com/ar/blog/social_3rd_intermediate_2024_round1'},
+    {id:'social_2024_r3_detail',subject:'الاجتماعيات',year:2024,round:'الدور الثالث',provider:'يُدرك',url:'https://yudrik.com/ar/blog/social_3rd_intermediate_2024_round3'},
     {id:'social_2024_r1',subject:'الاجتماعيات',year:2024,round:'الدور الأول',provider:'ملازمنا',url:'https://mlazemna.com/tm24ga/'},
     {id:'social_2024_r3',subject:'الاجتماعيات',year:2024,round:'الدور الثالث',provider:'ملازمنا',url:'https://mlazemna.com/s243ga/'},
     {id:'social_2025_pre',subject:'الاجتماعيات',year:2025,round:'تمهيدي',provider:'ملازمنا',url:'https://mlazemna.com/tm25gt3/'},
