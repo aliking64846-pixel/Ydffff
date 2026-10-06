@@ -96,10 +96,10 @@ body{padding-bottom:70px}
   <div class="topRight"><div class="logoTitle"><b><strong>100</strong> مستقبلي 🎓</b><small>اجتماعيات - ثالث متوسط</small></div><span class="crown">♛</span></div>
 </header>
 <nav class="nav">
-<button class="navbtn active" data-view="home"><span>⌂</span><small>الرئيسية</small></button>
-<button class="navbtn" data-view="lessons"><span>▤</span><small>الدروس</small></button>
-<button class="navbtn" data-view="exam"><span>☑</span><small>الاختبارات</small></button>
-<button class="navbtn" data-view="memory"><span>🧠</span><small>المراجعة</small></button>
+<button class="navbtn active" data-view="home" onclick="return window.__future100SafeNavigate('home')"><span>⌂</span><small>الرئيسية</small></button>
+<button class="navbtn" data-view="lessons" onclick="return window.__future100SafeNavigate('lessons')"><span>▤</span><small>الدروس</small></button>
+<button class="navbtn" data-view="exam" onclick="try{return window.startExam?window.startExam():window.__future100SafeNavigate('exam')}catch(e){return window.__future100SafeNavigate('exam')}"><span>☑</span><small>الاختبارات</small></button>
+<button class="navbtn" data-view="memory" onclick="return window.__future100SafeNavigate('memory')"><span>🧠</span><small>المراجعة</small></button>
 <button class="navbtn" id="moreBtn" onclick="toggleMoreMenu()"><span>⋮</span><small>المزيد</small></button>
 </nav>
 <div class="moreMenu" id="moreMenu">
