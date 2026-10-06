@@ -214,7 +214,7 @@ function renderMasteryRows(rows){
   return '<div style="display:grid;gap:10px">'+rows.map(function(x){
     const p=Math.max(0,Math.min(100,x.mastery||0));
     const label=p>=90?'🟢 ممتاز':p>=70?'🟡 جيد':'🔴 يحتاج دراسة';
-    return '<article class="lesson" style="padding:14px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><div><span class="tag">'+x.id+' • '+esc(x.subject)+'</span><h3 style="margin:7px 0">'+esc(x.title)+'</h3></div><b style="font-size:22px">'+p+'%</b></div><div class="progress"><div class="bar" style="width:'+p+'%"></div></div><div class="small" style="margin-top:8px">'+label+' • '+(x.total||0)+' سؤال • '+(x.due||0)+' مستحق للتكرار • '+(x.mistakes||0)+' خطأ'+(x.ministerial?' • '+x.ministerial+' وزاري موثّق':'')+'</div><div class="actions"><button class="primary" onclick="openLesson('+x.id+')">فتح الدرس</button><button class="ghost" onclick="startQuizFor('+x.id+')">اختبرني الآن</button></div></article>';
+    return '<article class="lesson" style="padding:14px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><div><span class="tag">'+x.id+' • '+String(x.subject||'')+'</span><h3 style="margin:7px 0">'+String(x.title||'')+'</h3></div><b style="font-size:22px">'+p+'%</b></div><div class="progress"><div class="bar" style="width:'+p+'%"></div></div><div class="small" style="margin-top:8px">'+label+' • '+(x.total||0)+' سؤال • '+(x.due||0)+' مستحق للتكرار • '+(x.mistakes||0)+' خطأ'+(x.ministerial?' • '+x.ministerial+' وزاري موثّق':'')+'</div><div class="actions"><button class="primary" onclick="openLesson('+x.id+')">فتح الدرس</button><button class="ghost" onclick="startQuizFor('+x.id+')">اختبرني الآن</button></div></article>';
   }).join('')+'</div>';
 }
 function lessonMinisterial(id){var qs=(window.Future100MinisterialBank&&window.Future100MinisterialBank.byLesson?window.Future100MinisterialBank.byLesson(id):[]).filter(function(q){return q.verified===true;});if(!qs.length){toast('لا توجد وزاريات موثقة لهذا الدرس حالياً.');return;}ministryQuiz(qs,'وزاريات '+(lessons.find(function(x){return x.id===id})||{}).title+' 🏆');}
@@ -298,7 +298,6 @@ renderToday();renderMemory();
 
 /* VISUAL_DASHBOARD_V3 */
 let examPlanState={days:7};
-function openExamPlan(){setView('examPlan');renderExamPlan();}
 function openExamPlan(){
   try{
     setView('examPlan');
@@ -567,6 +566,9 @@ function finishMinisterialExam(timeUp){stopMinisterialTimer();var e=ministerialE
 
 window.renderMinistryDashboard=renderMinistryDashboard;window.startMinisterialFilteredQuiz=startMinisterialFilteredQuiz;window.startMinisterialMistakes=startMinisterialMistakes;window.startMinisterialDue=startMinisterialDue;
 renderToday();
+</script>
+<script>
+window.addEventListener('error',function(e){try{console.error('Future100 JS error:',e.error||e.message);var t=document.getElementById('toast');if(t){t.textContent='⚠️ حدث خطأ في تشغيل الصفحة: '+(e.message||'JavaScript');t.classList.add('show');}}catch(_){} });
 </script>
 <script src="ministerial-bank.js"></script><script src="learning-engine.js"></script><script src="study-content.js"></script>
 </body>
