@@ -5,7 +5,7 @@
   const KEY='future100_learning_v2';
   const old=JSON.parse(localStorage.getItem(KEY)||'{}');
   const db={
-    version:5,
+    version:6,
     questions:old.questions||{},
     mistakes:old.mistakes||{},
     reviews:old.reviews||{},
@@ -76,8 +76,63 @@
     });
     return out;
   }
+
+  function lessonQuestions(lessonId){
+    const l=(typeof lessons!=='undefined'?lessons:[]).find(x=>Number(x.id)===Number(lessonId));
+    if(!l) return [];
+    const c=window.lessonContentCache&&window.lessonContentCache[lessonId];
+    if(!c) return [];
+    const out=[];
+    const add=(arr,cat,verified)=>{
+      (arr||[]).forEach((q,n)=>{
+        const raw=q.question||q.q||'';
+        if(!raw)return;
+        const id=q.id||('l'+lessonId+'_'+cat+'_'+n+'_'+hash(raw));
+        out.push({...q,id,lessonId:Number(lessonId),category:cat,type:verified?'وزاري موثّق':'تدريب من الكتاب',verified:!!verified,q:raw,a:q.answer??q.a??''});
+      });
+    };
+    add(c.ministerial,'وزاريات',true);
+    add(c.chapterQuestions,'أسئلة الدرس',false);
+    add(c.definitions,'تعريفات',false);
+    add(c.reasons,'علل وفسر',false);
+    add(c.enumerate,'عدد واذكر',false);
+    add(c.blanks,'فراغات',false);
+    add(c.trueFalse,'صح وخطأ',false);
+    return [...new Map(out.map(q=>[idOf(q),q])).values()];
+  }
+  function hash(s){
+    let h=2166136261; for(let i=0;i<String(s).length;i++){h^=String(s).charCodeAt(i);h=Math.imul(h,16777619);}
+    return (h>>>0).toString(36);
+  }
+  async function loadLessonBank(lessonId){
+    if(!window.Future100Content?.get) return [];
+    const l=(typeof lessons!=='undefined'?lessons:[]).find(x=>Number(x.id)===Number(lessonId));
+    if(!l)return [];
+    if(!window.lessonContentCache)window.lessonContentCache={};
+    if(!window.lessonContentCache[lessonId]) window.lessonContentCache[lessonId]=await window.Future100Content.get(l);
+    return lessonQuestions(lessonId);
+  }
+  function lessonStats(lessonId){
+    const qs=lessonQuestions(lessonId);
+    const states=qs.map(q=>db.questions[idOf(q)]||null);
+    const attempted=states.filter(Boolean);
+    const mastery=qs.length?Math.round(qs.reduce((s,q)=>s+((db.questions[idOf(q)]||{}).mastery||0),0)/qs.length):0;
+    const dueCount=qs.filter(q=>(db.questions[idOf(q)]||{}).nextReview<=now()).length;
+    const mistakesCount=qs.reduce((s,q)=>s+((db.questions[idOf(q)]||{}).wrong||0),0);
+    const completed=qs.length?Math.round(attempted.length/qs.length*100):0;
+    return {lessonId:Number(lessonId),total:qs.length,attempted:attempted.length,completed,mastery,due:dueCount,mistakes:mistakesCount,ministerial:qs.filter(q=>q.verified).length};
+  }
+  async function startLessonQuiz(lessonId){
+    const qs=await loadLessonBank(lessonId);
+    if(!qs.length){toast('جاري تجهيز بنك هذا الدرس من نص الكتاب، حاول مرة ثانية.');return;}
+    const ordered=qs.slice().sort((a,b)=>scoreFor(b)-scoreFor(a));
+    const selected=ordered.slice(0,15);
+    setView('quiz');
+    renderQuiz(selected);
+  }
+
   window.Future100Learning={
-    version:5,
+    version:6,
     record,
     ensure,
     due,
@@ -89,6 +144,10 @@
     ministerial:allMinisterial,
     smartMinisterial:smartMinisterialPool,
     weakMinisterial,
+    lessonQuestions,
+    loadLessonBank,
+    lessonStats,
+    startLessonQuiz,
     questionState:q=>db.questions[idOf(q)]||null,
     clearMistake:id=>{delete db.mistakes[id];save()},
     reset:()=>{localStorage.removeItem(KEY);location.reload()},
