@@ -358,7 +358,8 @@
   ];
 
   window.Future100MinisterialBank = {
-    version:'1.2.0',
+    coverageVerified: {2024:['تمهيدي','الدور الأول','الدور الثاني','الدور الثالث']},
+    version:'1.3.0',
     sources,
     questions,
     all(){ return questions.slice(); },
