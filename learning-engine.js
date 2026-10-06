@@ -5,7 +5,7 @@
   const KEY='future100_learning_v2';
   const old=JSON.parse(localStorage.getItem(KEY)||'{}');
   const db={
-    version:3,
+    version:4,
     questions:old.questions||{},
     mistakes:old.mistakes||{},
     reviews:old.reviews||{},
@@ -29,7 +29,7 @@
       x.correct++; x.mastery=Math.min(100,x.mastery+Math.max(5,20-x.level*2)); x.level=Math.min(8,x.level+1);
       x.nextReview=now()+interval(x.level)*60000;
     }else{
-      x.wrong++; x.mastery=Math.max(0,x.mastery-15); x.level=Math.max(0,x.level-2); x.nextReview=now()+interval(1)*60000;
+      x.wrong++; x.mastery=Math.max(0,x.mastery-20); x.level=Math.max(0,x.level-2); x.nextReview=now()+5*60000;
       db.mistakes[x.id]={...x,question:q.q||q.question,answer:q.a||q.answer,updatedAt:now()};
     }
     if(ok) delete db.mistakes[x.id];
@@ -44,10 +44,10 @@
   function scoreFor(q){
     const x=db.questions[idOf(q)];
     if(!x) return 0;
-    const dueNow=x.nextReview<=now()?50:0;
-    const weak=100-x.mastery;
-    const wrong=x.wrong*12;
-    const unseen=x.attempts===0?30:0;
+    const dueNow=x.nextReview<=now()?70:0;
+    const weak=(100-x.mastery)*1.25;
+    const wrong=x.wrong*18;
+    const unseen=x.attempts===0?35:0;
     return dueNow+weak+wrong+unseen;
   }
   function smartMinisterialPool(filters={}){
@@ -115,7 +115,7 @@
     renderQuiz(qs.map(q=>({...q,q:q.question,a:q.answer,type:'وزاري • يحتاج تكرار'})));
   };
   window.showSmartReview=function(){
-    const pool=typeof quizBank!=='undefined'?quizBank.map(q=>({...q,type:q.type||'تدريب'})):[];
+    const base=typeof quizBank!=='undefined'?quizBank.map(q=>({...q,type:q.type||'تدريب'})):[]; const ministry=allMinisterial().map(q=>({...q,q:q.question,a:q.answer,type:'وزاري • '+(q.round||'موثق')})); const pool=[...ministry,...base];
     const qs=Future100Learning.buildReview(pool);
     if(!qs.length){toast('لا توجد مراجعات مستحقة الآن 🎯');return;}
     setView('quiz'); renderQuiz(qs);
