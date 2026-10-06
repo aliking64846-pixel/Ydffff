@@ -73,7 +73,9 @@ body{padding-bottom:70px}
 .lessonHead h2{font-size:22px}.toolbar{position:sticky;top:0;z-index:20;background:var(--bg);padding:6px 0}
 }
 @media(max-width:520px){.feature{min-height:125px}.feature b{font-size:15px}.feature small{font-size:9px}.heroCopy span{font-size:13px}.heroCopy h1{font-size:29px}.heroCopy p{font-size:11px}.lowerGrid{grid-template-columns:1fr}.promo{min-height:95px}.phone{border-radius:34px}.brand b{font-size:13px}}
-</style>
+.moreMenu{display:none;position:fixed;z-index:120;bottom:76px;right:12px;width:200px;padding:8px;border:1px solid #1a5278;border-radius:14px;background:#061727ee;box-shadow:0 15px 40px #0009;backdrop-filter:blur(18px)}.moreMenu.open{display:block}.moreMenu button{width:100%;display:flex;gap:10px;align-items:center;border:0;background:transparent;color:#dcecf7;padding:12px;border-radius:9px;text-align:right}.moreMenu button:hover{background:#0b2e46;color:#25ddff}
+.bookShell{max-width:1000px;margin:auto}.bookHeader{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:20px;border:1px solid #173e5b;border-radius:16px;background:linear-gradient(145deg,#081d31,#061321)}.bookHeader h2{margin:8px 0 4px}.bookHeader p{margin:0;color:#91a7b8}.bookTabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.bookTab{border:1px solid #194967;background:#071b2c;color:#cfe0ec;border-radius:11px;padding:12px;font-size:12px}.bookTab.active{background:#073d56;color:#39ddff;border-color:#13cfff;box-shadow:0 0 20px #10cfff1c}.bookTools{display:flex;gap:10px;align-items:center;margin-bottom:10px}.bookTools .search{flex:1}.bookTools span{font-size:11px;color:#86a2b6}.bookResults{display:none;max-height:250px;overflow:auto;border:1px solid #173e5b;border-radius:12px;background:#061523;margin-bottom:10px}.bookResult{display:block;width:100%;text-align:right;background:transparent;border:0;border-bottom:1px solid #102d43;color:#dbe9f3;padding:10px}.bookResult b{color:#2bd8ff}.bookPage{min-height:520px;white-space:pre-wrap;direction:rtl;text-align:right;line-height:2;font-size:16px;padding:28px;border:1px solid #174765;border-radius:16px;background:#071827;box-shadow:inset 0 0 35px #0004}.bookPager{display:flex;justify-content:center;align-items:center;gap:18px;margin:12px 0}.bookPager span{min-width:100px;text-align:center;color:#2ce3ff;font-weight:800}
+@media(max-width:800px){.navbtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}.navbtn span{font-size:20px;line-height:1}.navbtn small{font-size:8px}.navbtn.active{box-shadow:0 0 16px #00bfff33}.bookTabs{grid-template-columns:1fr}.bookHeader{padding:14px}.bookHeader h2{font-size:18px}.bookPage{min-height:430px;font-size:14px;padding:18px}.bookTools{flex-direction:column;align-items:stretch}.bookTools span{text-align:center}}</style>
 </head>
 <body>
 <div class="app">
@@ -83,14 +85,17 @@ body{padding-bottom:70px}
   <div class="topRight"><div class="logoTitle"><b><strong>100</strong> مستقبلي 🎓</b><small>اجتماعيات - ثالث متوسط</small></div><span class="crown">♛</span></div>
 </header>
 <nav class="nav">
-<button class="navbtn active" data-view="home">الرئيسية 🏠</button>
-<button class="navbtn" data-view="lessons">الدروس 📖</button>
-<button class="navbtn" data-view="exam">الاختبارات ☑</button>
-<button class="navbtn" data-view="memory">المراجعة 🧠</button>
-<button class="navbtn" data-view="quiz">المزيد ⋮</button>
-<button class="navbtn">الإحصائيات 📈</button>
-<button class="navbtn">الإعدادات ⚙</button>
+<button class="navbtn active" data-view="home"><span>⌂</span><small>الرئيسية</small></button>
+<button class="navbtn" data-view="lessons"><span>▤</span><small>الدروس</small></button>
+<button class="navbtn" data-view="exam"><span>☑</span><small>الاختبارات</small></button>
+<button class="navbtn" data-view="memory"><span>🧠</span><small>المراجعة</small></button>
+<button class="navbtn" id="moreBtn" onclick="toggleMoreMenu()"><span>⋮</span><small>المزيد</small></button>
 </nav>
+<div class="moreMenu" id="moreMenu">
+<button onclick="toggleMoreMenu();setView('book')">📚 <span>الكتاب كامل</span></button>
+<button onclick="toggleMoreMenu();setView('quiz');renderQuiz(quizBank.slice(0,3))">❓ <span>الأسئلة</span></button>
+<button onclick="toggleMoreMenu();setView('lessons')">🔎 <span>بحث الدروس</span></button>
+</div>
 
 <main>
 <section id="home" class="view active"><div id="today"></div></section>
@@ -99,6 +104,18 @@ body{padding-bottom:70px}
   <div class="cards" id="cards"></div>
 </section>
 <section id="lessonView" class="view lessonView"><div id="lessonContent"></div></section>
+<section id="book" class="view"><div class="bookShell">
+<div class="bookHeader"><div><span class="tag">📚 الكتاب الرسمي</span><h2>كتاب الاجتماعيات — ثالث متوسط</h2><p>النص الكامل للأقسام الثلاثة داخل الموقع</p></div><button class="ghost" onclick="setView('home')">رجوع</button></div>
+<div class="bookTabs">
+<button class="bookTab active" data-book="geography" onclick="loadBook('geography')">🌍 الجغرافية</button>
+<button class="bookTab" data-book="history" onclick="loadBook('history')">⌛ التاريخ</button>
+<button class="bookTab" data-book="national" onclick="loadBook('national')">👥 التربية الوطنية والاجتماعية</button>
+</div>
+<div class="bookTools"><input id="bookSearch" class="search" placeholder="ابحث داخل الكتاب..."><span id="bookStatus">اختر قسماً</span></div>
+<div id="bookResults" class="bookResults"></div>
+<div id="bookPage" class="bookPage">افتح أحد أقسام الكتاب لبدء القراءة.</div>
+<div class="bookPager"><button class="ghost" onclick="bookPrev()">السابق</button><span id="bookPageNo">—</span><button class="primary" onclick="bookNext()">التالي</button></div>
+</div></section>
 <section id="quiz" class="view"><div id="quizContent"></div></section>
 <section id="exam" class="view"><div id="examContent"></div></section>
 <section id="memory" class="view"><div class="brainGrid"><div class="brain"><h2>🧠 التكرار الذكي</h2><p class="small">نظام مراجعة يركز على الأسئلة التي تحتاج تدريباً أكثر.</p><div class="ring" id="ring"><b id="ringText">0%</b></div><div class="repeatList" id="repeatList"></div></div><div class="brain"><h2>كيف تدرس؟</h2><div class="repeatList"><div class="rep"><span>1️⃣ اقرأ الشرح</span><span class="small">فهم</span></div><div class="rep"><span>2️⃣ أجب بدون مساعدة</span><span class="small">استرجاع</span></div><div class="rep"><span>3️⃣ راجع الخطأ</span><span class="small">تصحيح</span></div><div class="rep"><span>4️⃣ كرر لاحقاً</span><span class="small">تثبيت</span></div><div class="rep"><span>5️⃣ اختبر نفسك</span><span class="small">وزاري</span></div></div></div></div></section>
@@ -113,10 +130,10 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 function save(){localStorage.setItem('future100_state',JSON.stringify(state)); updateStats(); renderMemory();}
 function updateStats(){ $('#lessonDone').textContent=Object.keys(state.done).length;$('#correct').textContent=state.correct;$('#streak').textContent=state.streak; }
 function toast(t){$('#toast').textContent=t;$('#toast').classList.add('show');setTimeout(()=>$('#toast').classList.remove('show'),2200)}
-function setView(v){$$('.view').forEach(x=>x.classList.remove('active'));$('#'+v).classList.add('active');$$('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===v)); if(v==='lessons')renderCards(); if(v==='memory')renderMemory(); if(v==='home')renderToday();}
+function setView(v){$$('.view').forEach(x=>x.classList.remove('active'));$('#'+v).classList.add('active');$$('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===v)); if(v==='lessons')renderCards(); if(v==='memory')renderMemory(); if(v==='home')renderToday(); if(v==='book')loadBook(bookKey);}
 $$('.navbtn').forEach(b=>b.onclick=()=>setView(b.dataset.view));
 let selected='الكل'; $$('[data-sub]').forEach(b=>b.onclick=()=>{selected=b.dataset.sub;$$('[data-sub]').forEach(x=>x.classList.toggle('active',x===b));setView('lessons');renderCards()});
-$('#search').oninput=renderCards;
+$('#search').oninput=renderCards; if($('#bookSearch')) $('#bookSearch').oninput=searchBook;
 function filtered(){let q=($('#search')?.value||'').trim();return lessons.filter(l=>(selected==='الكل'||l.subject===selected)&&(!q||l.title.includes(q)||l.chapter.includes(q)||l.summary.includes(q)));}
 function renderCards(){let arr=filtered();$('#cards').innerHTML=arr.map(l=>`<article class="lesson"><span class="tag">${l.subject} • ${l.unit}</span><h3>${l.id}. ${l.title}</h3><p>${l.summary}</p><div class="progress"><div class="bar" style="width:${state.done[l.id]?100:0}%"></div></div><div class="actions"><button class="primary" onclick="openLesson(${l.id})">${state.done[l.id]?'مراجعة الدرس':'ابدأ الدرس'} ←</button><button class="ghost" onclick="startQuizFor(${l.id})">سؤال</button></div></article>`).join('')||'<div class="empty">لا توجد نتائج.</div>';}
 function openLesson(id){let l=lessons.find(x=>x.id===id);setView('lessonView');$('#lessonContent').innerHTML=`<div class="lessonHead"><span class="tag">${l.subject} • ${l.chapter}</span><h2>${l.title}</h2><p>${l.summary}</p></div><div class="lessonBody"><h3>🎯 المطلوب للوزاري</h3><p>ركز على: <b>التعريفات، علل، عدد، قارن، أكمل الفراغ، صح وخطأ، الخرائط والمواقع والأرقام</b> بحسب طبيعة هذا الدرس.</p><h3>🧠 دورة التثبيت</h3><p>اقرأ الفكرة مرة، أغلق الشرح، حاول استرجاعها بصوتك، ثم حل السؤال. إذا أخطأت لا تعتبرها فشلاً؛ سجّلها للتكرار.</p><div class="memory"><div class="m"><b>فهم</b><br><span class="small">اقرأ الملخص</span></div><div class="m"><b>استرجاع</b><br><span class="small">أجب بدون النظر</span></div><div class="m"><b>تكرار</b><br><span class="small">راجع حسب الضعف</span></div></div><div class="actions"><button class="primary" onclick="startQuizFor(${l.id})">ابدأ أسئلة الدرس ←</button><button class="ghost" onclick="completeLesson(${l.id})">تمت المراجعة ✓</button></div></div>`;}
@@ -127,6 +144,23 @@ function showQ(){let x=current[qi];$('#quizContent').innerHTML=`<div class="quiz
 function reveal(){let x=current[qi];$('#res').className='result good';$('#res').innerHTML='<b>الإجابة النموذجية:</b><br>'+x.a+'<br><br><button class="primary" onclick="grade(true)">عرفتها ✓</button> <button class="ghost" onclick="grade(false)">كنت مخطئاً</button>';}
 function grade(ok){state.correct+=ok?1:0;state.streak++;if(!ok){let key=current[qi].q;state.repeat[key]=(state.repeat[key]||0)+1;}save();if(qi<current.length-1){qi++;showQ()}else{toast('انتهت المراجعة 🎯');setView('memory')}}
 function renderMemory(){let total=Object.values(state.repeat).reduce((a,b)=>a+b,0), done=Object.keys(state.done).length, pct=Math.min(100,Math.round(done/lessons.length*100));$('#ring').style.setProperty('--pct',pct+'%');$('#ringText').textContent=pct+'%';let arr=Object.entries(state.repeat).sort((a,b)=>b[1]-a[1]).slice(0,8);$('#repeatList').innerHTML=arr.length?arr.map(([q,n])=>`<div class="rep"><span>${q}</span><b>${n}×</b></div>`).join(''):'<div class="empty">لا توجد أخطاء مسجلة بعد. ابدأ بالأسئلة.</div>'}
+let bookCache={},bookPages=[],bookIndex=0,bookKey='geography';
+async function loadBook(key='geography'){
+ bookKey=key; $('.bookTab').forEach(b=>b.classList.toggle('active',b.dataset.book===key));
+ const status=$('#bookStatus'); status.textContent='جاري تحميل الكتاب...';
+ try{
+  if(!bookCache[key]){const r=await fetch('book-'+key+'.txt',{cache:'force-cache'});if(!r.ok)throw new Error('HTTP '+r.status);bookCache[key]=await r.text();}
+  const raw=bookCache[key],matches=[...raw.matchAll(/<PARSED TEXT FOR PAGE: (\d+) \/ 160>/g)];
+  bookPages=matches.map((m,i)=>({page:Number(m[1]),text:raw.slice(m.index+m[0].length,i+1<matches.length?matches[i+1].index:raw.length).trim()}));
+  bookIndex=0;renderBookPage();status.textContent='تم تحميل '+bookPages.length+' صفحة';
+ }catch(e){status.textContent='تعذر تحميل الكتاب';$('#bookPage').textContent='تعذر تحميل ملف الكتاب. تأكد من نشر ملفات الكتاب مع الموقع.';console.error(e)}
+}
+function renderBookPage(){const p=bookPages[bookIndex];if(!p)return;$('#bookPage').textContent=p.text;$('#bookPageNo').textContent='صفحة '+p.page+' / '+bookPages.length;$('#bookResults').style.display='none'}
+function bookNext(){if(bookIndex<bookPages.length-1){bookIndex++;renderBookPage()}}
+function bookPrev(){if(bookIndex>0){bookIndex--;renderBookPage()}}
+function searchBook(){const q=($('#bookSearch')?.value||'').trim();const box=$('#bookResults');if(!q){box.style.display='none';return}const hits=bookPages.map((p,i)=>({p,i})).filter(x=>x.p.text.includes(q)).slice(0,30);box.innerHTML=hits.length?hits.map(x=>'<button class="bookResult" onclick="bookIndex='+x.i+';renderBookPage()"><b>صفحة '+x.p.page+'</b> — '+x.p.text.replace(/\s+/g,' ').slice(0,150)+'</button>').join(''):'<div class="empty">لا توجد نتائج.</div>';box.style.display='block'}
+function toggleMoreMenu(){$('#moreMenu')?.classList.toggle('open')}
+document.addEventListener('click',e=>{const m=$('#moreMenu');if(m?.classList.contains('open')&&!e.target.closest('#moreMenu')&&!e.target.closest('#moreBtn'))m.classList.remove('open')});
 function renderToday(){let due=Object.entries(state.repeat).sort((a,b)=>b[1]-a[1]).slice(0,3);$('#today').innerHTML=`<div class="repeatList"><div class="rep"><span>📚 ادرس درساً جديداً</span><button class="ghost" onclick="setView('lessons')">ابدأ</button></div><div class="rep"><span>🧠 راجع نقاط ضعفك</span><button class="ghost" onclick="setView('memory')">راجع</button></div><div class="rep"><span>🏆 اختبار وزاري سريع</span><button class="ghost" onclick="setView('quiz');renderQuiz(quizBank.slice(0,3))">اختبر</button></div></div>`}
 
 // ADAPTIVE_100_V2
@@ -194,7 +228,7 @@ function renderToday(){
     <aside class="leftRail">
       <div class="leftBox subjectBox">
         <h2>مادة الاجتماعيات</h2>
-        <button class="subjectBtn active" onclick="selected='الكل';setView('lessons');renderCards()">🌐 <span>الجغرافية</span></button>
+        <button class="subjectBtn active" onclick="selected='الجغرافية';setView('lessons');renderCards()">🌐 <span>الجغرافية</span></button>
         <button class="subjectBtn" onclick="selected='التاريخ';setView('lessons');renderCards()">⌛ <span>التاريخ</span></button>
         <button class="subjectBtn" onclick="selected='التربية الوطنية والاجتماعية';setView('lessons');renderCards()">👥 <span>التربية الوطنية والاجتماعية</span></button>
       </div>
