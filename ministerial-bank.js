@@ -366,6 +366,15 @@
   ];
 
   window.Future100MinisterialBank = {
+    // سجل تدقيق الأوراق: لا يعني اكتمال تفريغ الأسئلة، بل يثبت وجود الورقة في مصدرين مستقلين.
+    paperAudit: [
+      {year:2022,round:'الدور الأول',sources:['https://ntallem.com/wasari/wsari3mut2022d1.html']},
+      {year:2022,round:'الدور الثاني',sources:['https://ntallem.com/wasari/wsari3mut2022d2.html']},
+      {year:2024,round:'الدور الأول',sources:['https://iraqedu.net/%D8%A7%D8%B3%D8%A6%D9%84%D8%A9-%D8%A7%D8%AC%D8%AA%D9%85%D8%A7%D8%B9%D9%8A%D8%A7%D8%AA-%D8%AF%D9%88%D8%B1-%D8%A7%D9%88%D9%84-%D8%AB%D8%A7%D9%84%D8%AB-%D9%85%D8%AA%D9%88%D8%B3%D8%B7-2024/','https://mlazemna.com/tm24ga/']},
+      {year:2024,round:'الدور الثاني',sources:['https://iraqedu.net/%D8%A7%D8%B3%D8%A6%D9%84%D8%A9-%D8%A7%D8%AC%D8%AA%D9%85%D8%A7%D8%B9%D9%8A%D8%A7%D8%AA-%D8%AF%D9%88%D8%B1-%D8%AB%D8%A7%D9%86%D9%8A-%D8%AB%D8%A7%D9%84%D8%AB-%D9%85%D8%AA%D9%88%D8%B3%D8%B7-2024/','https://mlazemna.com/s24ga/']},
+      {year:2024,round:'الدور الثالث',sources:['https://mlazemna.com/s243ga/','https://yallandrs.net/%D8%A7%D8%B3%D8%A6%D9%84%D8%A9-%D8%A7%D9%84%D8%A7%D8%AC%D8%AA%D9%85%D8%A7%D8%B9%D9%8A%D8%A7%D8%AA-%D8%A7%D9%84%D8%AB%D8%A7%D9%84%D8%AB-%D9%85%D8%AA%D9%88%D8%B3%D8%B7-2024-%D8%A7%D9%84%D8%AF%D9%88-2/']}
+    ],
+
     verifiedArchiveCoverage: {
       2023: ['تمهيدي','الدور الأول','الدور الثاني','الدور الثالث'],
       note:'تم التحقق من وجود أوراق 2023 في مصادر أرشيفية مستقلة؛ هذا لا يعني أن كل سؤال منها مفرغ داخل البنك بعد.'
@@ -374,7 +383,7 @@
     verifiedByPaper:true,
     verificationPolicy:'لا يدخل السؤال كوزاري موثوق إلا إذا كان نصه مثبتاً من ورقة امتحانية منشورة ومربوطاً بمصدرها؛ الأرشيف غير المفروغ يبقى خارج الاختبار.',
     coverageVerified: {2024:['تمهيدي','الدور الأول','الدور الثاني','الدور الثالث']},
-    version:'1.9.0',
+    version:'2.0.0',
     sources,
     questions,
     all(){ return questions.slice(); },
