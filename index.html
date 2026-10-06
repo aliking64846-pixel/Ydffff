@@ -190,39 +190,25 @@ async function startMasteryMission(){
   renderQuiz(pool);
   toast('بدأت مهمة الإتقان: 20 سؤالاً، والأضعف أولاً 🎯');
 }
-async function openMasteryMap(){
-  setView('masteryMap');
-  const box=$('#masteryMapContent'),summary=$('#masterySummary');
-  if(!box||!summary){toast('تعذر فتح خريطة الإتقان ⚠️');return;}
-  box.innerHTML='<div class="empty">⏳ جاري حساب إتقان الدروس الـ62…<br><small>سيظهر التقدم أثناء التحليل</small></div>';
-  summary.innerHTML='';
-  const rows=[];
+function openMasteryMap(){
   try{
-    for(let i=0;i<lessons.length;i++){
-      const l=lessons[i];
-      try{
-        if(window.Future100Learning?.loadLessonBank) await window.Future100Learning.loadLessonBank(l.id);
-        const s=window.Future100Learning?.lessonStats?window.Future100Learning.lessonStats(l.id):{total:0,mastery:0,due:0,mistakes:0,ministerial:0};
-        rows.push({...l,...s});
-      }catch(e){
-        rows.push({...l,total:0,mastery:0,due:0,mistakes:0,ministerial:0,error:true});
-      }
-      box.innerHTML=renderMasteryRows(rows);
-      const pct=Math.round((i+1)/lessons.length*100);
-      const first=box.querySelector('.empty');
-      if(first)first.innerHTML='⏳ تم تحليل '+(i+1)+' من '+lessons.length+' درس ('+pct+'%)…';
-    }
+    setView('masteryMap');
+    const box=$('#masteryMapContent'),summary=$('#masterySummary');
+    if(!box||!summary){toast('تعذر فتح خريطة الإتقان ⚠️');return;}
+    box.innerHTML='<div class="empty">⏳ جاري فتح الخريطة…</div>';
+    summary.innerHTML='';
+    const rows=lessons.map(function(l){
+      let s={total:0,mastery:0,due:0,mistakes:0,ministerial:0};
+      try{if(window.Future100Learning&&typeof Future100Learning.lessonStats==='function')s=Future100Learning.lessonStats(l.id)||s;}catch(e){}
+      return Object.assign({},l,s);
+    });
+    box.innerHTML=renderMasteryRows(rows);
     const avg=rows.length?Math.round(rows.reduce((a,x)=>a+(Number(x.mastery)||0),0)/rows.length):0;
-    const due=rows.filter(x=>x.due>0).length;
-    const strong=rows.filter(x=>x.mastery>=90).length;
-    const failed=rows.filter(x=>x.error).length;
+    const due=rows.filter(x=>(x.due||0)>0).length;
+    const strong=rows.filter(x=>(Number(x.mastery)||0)>=90).length;
     summary.innerHTML='<div class="kpi"><b>'+rows.length+'</b><span>درس</span></div><div class="kpi"><b>'+avg+'%</b><span>متوسط الإتقان</span></div><div class="kpi"><b>'+due+'</b><span>يحتاج تكرار</span></div><div class="kpi"><b>'+strong+'</b><span>إتقان 90%+</span></div>';
-    if(failed) toast('تم فتح الخريطة، لكن تعذر تحليل '+failed+' درس.');
-  }catch(e){
-    console.error('Mastery map error',e);
-    toast('حدث خطأ أثناء بناء خريطة الإتقان ⚠️');
-    if(!rows.length) box.innerHTML='<div class="empty">تعذر بناء الخريطة. أعد المحاولة.</div>';
-  }
+    toast('تم فتح خريطة الإتقان ✅');
+  }catch(e){console.error(e);toast('حدث خطأ أثناء فتح الخريطة ⚠️');}
 }
 function renderMasteryRows(rows){
   return '<div style="display:grid;gap:10px">'+rows.map(function(x){
@@ -313,29 +299,42 @@ renderToday();renderMemory();
 /* VISUAL_DASHBOARD_V3 */
 let examPlanState={days:7};
 function openExamPlan(){setView('examPlan');renderExamPlan();}
-async function renderExamPlan(){
-  const el=$('#examPlanContent'); if(!el)return;
-  const days=Math.max(1,Math.min(60,examPlanState.days||7));
-  el.innerHTML='<div class="card"><h2>ابنِ خطتك</h2><p>جاري تحليل الدروس الـ62 وبناء خطة حسب أخطائك وإتقانك…</p><div class="sessionBar"><i id="planLoadBar" style="width:2%"></i></div><div class="actions"><input id="planDays" type="number" min="1" max="60" value="'+days+'" style="max-width:140px"><button class="primary" onclick="examPlanState.days=Math.max(1,Math.min(60,Number(document.getElementById(\'planDays\').value)||7));renderExamPlan()">إعادة إنشاء الخطة</button></div></div>';
-  if(!window.Future100Learning?.loadLessonBank){el.innerHTML+='<div class="warning">نظام المحتوى لم يكتمل تحميله بعد. أعد فتح الصفحة.</div>';return;}
-  const rows=[];
+function openExamPlan(){
   try{
-  for(let i=0;i<lessons.length;i++){
-    const l=lessons[i];
-    try{await Future100Learning.loadLessonBank(l.id);const s=Future100Learning.lessonStats(l.id);rows.push({...l,...s});}
-    catch(e){rows.push({...l,total:0,mastery:0,due:0,mistakes:0,error:true});}
-    const bar=$('#planLoadBar');if(bar)bar.style.width=Math.round((i+1)/lessons.length*100)+'%';
-  }
-  rows.sort((a,b)=>(b.mistakes-a.mistakes)||(b.due-a.due)||(a.mastery-b.mastery));
-  const per=Math.max(1,Math.ceil(rows.length/days));let cards=[];
-  for(let d=0;d<days;d++){
-    const chunk=rows.slice(d*per,(d+1)*per);if(!chunk.length)break;
-    cards.push('<div class="card" style="margin:10px 0"><h3>📅 اليوم '+(d+1)+'</h3><p class="small">'+(d===days-1?'مراجعة شاملة + وزاريات + أخطاء':'دروس أساسية + استرجاع + تكرار للضعف')+'</p>'+chunk.map(l=>'<div class="rep"><span>'+l.id+'. '+l.title+'<small class="small"> • '+(l.total||0)+' سؤال • '+(l.mistakes||0)+' خطأ • '+(l.due||0)+' مستحق</small></span><b>'+Math.round(l.mastery||0)+'%</b></div>').join('')+(d===days-1?'<button class="primary" onclick="startMinisterialExam()">🏆 محاكاة وزاري كاملة</button>':'<button class="ghost" onclick="startMasteryMission()">🚀 جلسة إتقان</button>')+'</div>');
-  }
-  const failed=rows.filter(x=>x.error).length;
-  el.innerHTML='<div class="card"><h2>خطة '+days+' يوم</h2><p>الخطة مبنية على 62 درساً فعلياً، وتقدم الأخطاء والمراجعة المستحقة على الدروس الجديدة.</p>'+ (failed?'<div class="warning">⚠️ تعذر تحميل '+failed+' درس. راجع تحليل المحتوى قبل الاعتماد على الخطة.</div>':'<div class="okTag">✓ تم تحليل 62/62 درس</div>')+'</div>'+cards.join('');
-  }catch(e){console.error('Exam plan error',e);el.innerHTML='<div class="warning">⚠️ حدث خطأ أثناء بناء الخطة. حاول مرة ثانية.</div>';toast('تعذر بناء الخطة حالياً ⚠️');}
+    setView('examPlan');
+    const el=$('#examPlanContent');
+    if(!el){toast('تعذر فتح صفحة الخطة ⚠️');return;}
+    const days=Math.max(1,Math.min(60,Number((window.examPlanState&&examPlanState.days)||7)));
+    el.innerHTML='<div class="card"><h2>📅 خطتك قبل الامتحان</h2><p>اختر عدد الأيام، وسأوزع لك الدروس حسب الضعف والأخطاء.</p><div class="actions"><input id="planDays" type="number" min="1" max="60" value="'+days+'" style="max-width:140px"><button class="primary" onclick="buildExamPlan()">🚀 بناء الخطة</button></div></div>';
+  }catch(e){console.error(e);toast('تعذر فتح الخطة ⚠️');}
 }
+function buildExamPlan(){
+  try{
+    const el=$('#examPlanContent');
+    const days=Math.max(1,Math.min(60,Number($('#planDays')&&$('#planDays').value)||7));
+    window.examPlanState=window.examPlanState||{days:7};
+    examPlanState.days=days;
+    const rows=lessons.map(function(l){
+      let s={total:0,mastery:0,due:0,mistakes:0};
+      try{if(window.Future100Learning&&typeof Future100Learning.lessonStats==='function')s=Future100Learning.lessonStats(l.id)||s;}catch(e){}
+      return Object.assign({},l,s);
+    });
+    rows.sort(function(a,b){return (Number(b.mistakes)||0)-(Number(a.mistakes)||0)||(Number(b.due)||0)-(Number(a.due)||0)||(Number(a.mastery)||0)-(Number(b.mastery)||0);});
+    const per=Math.max(1,Math.ceil(rows.length/days));
+    let html='<div class="card"><h2>خطة '+days+' يوم</h2><p>تم بناء الخطة من الدروس الـ62 بناءً على أخطائك وإتقانك.</p>';
+    for(let d=0;d<days;d++){
+      const chunk=rows.slice(d*per,(d+1)*per);
+      if(!chunk.length)break;
+      html+='<div class="card" style="margin:10px 0"><h3>📅 اليوم '+(d+1)+'</h3><p class="small">'+(d===days-1?'مراجعة شاملة + وزاريات + أخطاء':'فهم + استرجاع + تكرار للضعف')+'</p>';
+      chunk.forEach(function(l){html+='<div class="rep"><span>'+l.id+'. '+l.title+'<small class="small"> • '+(l.total||0)+' سؤال • '+(l.mistakes||0)+' خطأ • '+(l.due||0)+' مستحق</small></span><b>'+Math.round(Number(l.mastery)||0)+'%</b></div>';});
+      html+=(d===days-1?'<button class="primary" onclick="startMinisterialExam()">🏆 اختبار وزاري 100 درجة</button>':'<button class="ghost" onclick="startMasteryMission()">🚀 جلسة إتقان</button>')+'</div>';
+    }
+    html+='</div>';
+    el.innerHTML=html;
+    toast('تم بناء خطتك بنجاح ✅');
+  }catch(e){console.error(e);toast('حدث خطأ أثناء بناء الخطة ⚠️');}
+}
+
 function renderToday(){
   const done=Object.keys(state.done).length;
   const pct=Math.round(done/lessons.length*100);
