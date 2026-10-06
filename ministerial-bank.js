@@ -11,6 +11,10 @@
     {id:'social_2023_archive',subject:'الاجتماعيات',year:2023,round:'أرشيف كامل',provider:'IraqEdu',url:'https://iraqedu.net/%D8%A7%D8%B3%D8%A6%D9%84%D8%A9-%D8%A7%D8%AC%D8%AA%D9%85%D8%A7%D8%B9%D9%8A%D8%A7%D8%AA-%D8%AF%D9%88%D8%B1-%D8%A7%D9%84%D8%A7%D9%88%D9%84-%D8%AB%D8%A7%D9%84%D8%AB-%D9%85%D8%AA%D9%88%D8%B3%D8%B7-2023/'},
     {id:'social_2023_r2_archive',subject:'الاجتماعيات',year:2023,round:'الدور الثاني',provider:'أحمد الداوودي',url:'https://www.ahmed-aldaoody.com/2023/08/20232022_91.html'},
     {id:'social_2022_r1_archive',subject:'الاجتماعيات',year:2022,round:'الدور الأول',provider:'نتعلم',url:'https://ntallem.com/wasari/wsari3mut2022d1.html'},
+    {id:'social_2022_r2_detail',subject:'الاجتماعيات',year:2022,round:'الدور الثاني',provider:'نتعلم/أرشيف',url:'https://ntallem.com/wasari/wsari3mut2022d1.html'},
+    {id:'social_2023_r3_detail',subject:'الاجتماعيات',year:2023,round:'الدور الثالث',provider:'ملازمنا',url:'https://mlazemna.com/as23ga3/'},
+    {id:'social_2024_r3_detail',subject:'الاجتماعيات',year:2024,round:'الدور الثالث',provider:'ملازمنا',url:'https://mlazemna.com/s243ga/'},
+    {id:'social_2025_r3_detail',subject:'الاجتماعيات',year:2025,round:'الدور الثالث',provider:'ملازمنا',url:'https://mlazemna.com/sa253ga/'},
     {id:'social_2022_2025_index',subject:'الاجتماعيات',year:2022,round:'أرشيف',provider:'ملازمنا',url:'https://mlazemna.com/mvgtwz/'},
     {id:'social_2024_r1',subject:'الاجتماعيات',year:2024,round:'الدور الأول',provider:'ملازمنا',url:'https://mlazemna.com/tm24ga/'},
     {id:'social_2024_r3',subject:'الاجتماعيات',year:2024,round:'الدور الثالث',provider:'ملازمنا',url:'https://mlazemna.com/s243ga/'},
@@ -363,7 +367,7 @@
 
   window.Future100MinisterialBank = {
     coverageVerified: {2024:['تمهيدي','الدور الأول','الدور الثاني','الدور الثالث']},
-    version:'1.4.0',
+    version:'1.5.0',
     sources,
     questions,
     all(){ return questions.slice(); },
