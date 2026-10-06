@@ -3,7 +3,8 @@
 */
 (function(){
   const KEY='future100_learning_v2';
-  const old=JSON.parse(localStorage.getItem(KEY)||'{}');
+  function readDB(){try{const raw=localStorage.getItem(KEY);return raw?JSON.parse(raw):{};}catch(e){try{localStorage.removeItem(KEY)}catch(_e){};return {};}}
+  const old=readDB();
   const db={
     version:6,
     questions:old.questions||{},
@@ -14,7 +15,7 @@
   const now=()=>Date.now();
   const norm=s=>String(s||'').replace(/\s+/g,' ').trim();
   const idOf=q=>q.id||('q_'+btoa(unescape(encodeURIComponent(norm(q.q||q.question)))).replace(/[^a-zA-Z0-9]/g,'').slice(0,32));
-  function save(){localStorage.setItem(KEY,JSON.stringify(db));}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(db));}catch(e){console.error('تعذر حفظ نظام التعلم',e);}}
   function interval(level){
     return [0,10,60,360,1440,3*1440,7*1440,14*1440,30*1440][Math.max(0,Math.min(8,level))];
   }
