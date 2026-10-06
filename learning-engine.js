@@ -43,6 +43,7 @@
   function mistakes(){return Object.values(db.mistakes).sort((a,b)=>(b.wrong-a.wrong)||(a.mastery-b.mastery));}
   function allMinisterial(){
     const out=[];
+    if(window.Future100MinisterialBank?.all) return window.Future100MinisterialBank.all().map((q,i)=>({...q,id:q.id||'m_'+i,category:'وزاريات',verified:true,type:'وزاري'}));
     if(typeof lessons==='undefined') return out;
     lessons.forEach(l=>{
       const c=window.lessonContentCache&&window.lessonContentCache[l.id];
@@ -70,6 +71,11 @@
     }
   };
   window.recordLearningAnswer=record;
+  window.showMinistry=function(){
+    const qs=allMinisterial();
+    if(!qs.length){toast('قاعدة الوزاريات موصولة وجاهزة، لكن لم يتم تفريغ أسئلة موثقة فيها بعد. لن نضع أسئلة تدريبية باسم وزاري.');return;}
+    setView('quiz'); renderQuiz(qs.slice(0,20).map(q=>({...q,q:q.question,a:q.answer,type:'وزاري موثّق'})));
+  };
   window.showSmartReview=function(){
     const pool=typeof quizBank!=='undefined'?quizBank.map(q=>({...q,type:q.type||'تدريب'})):[];
     const qs=Future100Learning.buildReview(pool);
