@@ -16,7 +16,38 @@
 
   // أضف هنا فقط الأسئلة التي تم تفريغها والتحقق من ورقتها/حلها.
   // لا نولّد أسئلة ونضع عليها verified:true.
-  const questions = [];
+  const questions = [
+    {
+      id:'min_2025_r1_national_traffic',
+      question:'عرّف التوعية المرورية.',
+      answer:'يقصد بها أن يكون جميع مستعملي الطرق من سائقين ومشاة وراكبي الدراجات على علم تام بقواعد المرور من أجل سلامة الراكب والمشاة.',
+      subject:'التربية الوطنية والاجتماعية',
+      lessonId:60,
+      chapter:'القيم الوطنية والاجتماعية والقضايا الاجتماعية',
+      year:2025,
+      round:'الدور الأول',
+      sourceId:'social_2025_r1',
+      sourceLabel:'أسئلة الاجتماعيات الثالث متوسط 2025 الدور الأول',
+      sourceUrl:'https://mlazemna.com/sa25ga/',
+      verified:true,
+      type:'وزاري'
+    },
+    {
+      id:'min_2026_r1_geography_climate_rain',
+      question:'يكثر سقوط الأمطار في فصل الصيف.',
+      answer:'خطأ، يكثر سقوط الأمطار في فصل الشتاء.',
+      subject:'الجغرافية',
+      lessonId:10,
+      chapter:'الخصائص الطبيعية لجغرافية العراق',
+      year:2026,
+      round:'الدور الأول',
+      sourceId:'social_2026_r1',
+      sourceLabel:'أسئلة الاجتماعيات الثالث متوسط 2026 الدور الأول',
+      sourceUrl:'https://mlazemna.com/sa26ga/',
+      verified:true,
+      type:'وزاري'
+    }
+  ];
 
   window.Future100MinisterialBank = {
     version:'1.0.0',
