@@ -17,6 +17,22 @@
   // أضف هنا فقط الأسئلة التي تم تفريغها والتحقق من ورقتها/حلها.
   // لا نولّد أسئلة ونضع عليها verified:true.
   const questions = [
+
+    {
+      id:'min_2024_r2_note',
+      question:'سؤال وزاري موثق: الدور الثاني 2024 — محور التعاريف/الصح والخطأ في الاجتماعيات.',
+      answer:'هذا سجل أرشيفي للدور الثاني 2024، وليس نص سؤال؛ لا يُعرض كسؤال اختبار حتى يتم تفريغ نص الورقة.',
+      subject:'الاجتماعيات',
+      lessonId:null,
+      chapter:null,
+      year:2024,
+      round:'الدور الثاني',
+      sourceId:'social_2024_r2',
+      sourceLabel:'أرشيف أسئلة الاجتماعيات الثالث متوسط 2024 الدور الثاني',
+      sourceUrl:'https://mlazemna.com/s24ga/',
+      verified:false,
+      type:'أرشيف'
+    },
     {
       id:'min_2025_r1_national_traffic',
       question:'عرّف التوعية المرورية.',
