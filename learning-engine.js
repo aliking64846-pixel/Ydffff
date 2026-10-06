@@ -5,7 +5,7 @@
   const KEY='future100_learning_v2';
   const old=JSON.parse(localStorage.getItem(KEY)||'{}');
   const db={
-    version:2,
+    version:3,
     questions:old.questions||{},
     mistakes:old.mistakes||{},
     reviews:old.reviews||{},
@@ -41,6 +41,26 @@
     return Object.values(db.questions).filter(x=>x.nextReview<=t && (!filter||filter(x))).sort((a,b)=>(a.mastery-b.mastery)||(a.nextReview-b.nextReview));
   }
   function mistakes(){return Object.values(db.mistakes).sort((a,b)=>(b.wrong-a.wrong)||(a.mastery-b.mastery));}
+  function scoreFor(q){
+    const x=db.questions[idOf(q)];
+    if(!x) return 0;
+    const dueNow=x.nextReview<=now()?50:0;
+    const weak=100-x.mastery;
+    const wrong=x.wrong*12;
+    const unseen=x.attempts===0?30:0;
+    return dueNow+weak+wrong+unseen;
+  }
+  function smartMinisterialPool(filters={}){
+    let pool=allMinisterial();
+    if(filters.year) pool=pool.filter(q=>Number(q.year)===Number(filters.year));
+    if(filters.round) pool=pool.filter(q=>q.round===filters.round);
+    if(filters.subject) pool=pool.filter(q=>q.subject===filters.subject);
+    if(filters.lessonId) pool=pool.filter(q=>Number(q.lessonId)===Number(filters.lessonId));
+    return pool.sort((a,b)=>scoreFor(b)-scoreFor(a));
+  }
+  function weakMinisterial(){
+    return allMinisterial().filter(q=>db.questions[idOf(q)]).sort((a,b)=>scoreFor(b)-scoreFor(a)).slice(0,20);
+  }
   function allMinisterial(){
     const out=[];
     if(window.Future100MinisterialBank?.all) return window.Future100MinisterialBank.all().filter(q=>q.verified===true).map((q,i)=>({...q,id:q.id||'m_'+i,category:'وزاريات',verified:true,type:'وزاري'}));
@@ -52,7 +72,7 @@
     return out;
   }
   window.Future100Learning={
-    version:2,
+    version:3,
     record,
     ensure,
     due,
@@ -60,6 +80,9 @@
     stats:()=>({...db.stats}),
     mastery:()=>Object.values(db.questions),
     ministerial:allMinisterial,
+    smartMinisterial:smartMinisterialPool,
+    weakMinisterial,
+    questionState:q=>db.questions[idOf(q)]||null,
     clearMistake:id=>{delete db.mistakes[id];save()},
     reset:()=>{localStorage.removeItem(KEY);location.reload()},
     buildReview:(pool=[])=>{
@@ -78,6 +101,18 @@
     const qs=allMinisterial();
     if(!qs.length){toast('قاعدة الوزاريات موصولة وجاهزة، لكن لم يتم تفريغ أسئلة موثقة فيها بعد.');return;}
     setView('quiz'); renderQuiz(qs.slice(0,20).map(q=>({...q,q:q.question,a:q.answer,type:'وزاري موثّق'})));
+  };
+  window.startSmartMinisterial=function(filters={}){
+    const qs=smartMinisterialPool(filters).slice(0,20);
+    if(!qs.length){toast('لا توجد وزاريات مطابقة للفلاتر 🎯');return;}
+    setView('quiz');
+    renderQuiz(qs.map(q=>({...q,q:q.question,a:q.answer,type:'وزاري • '+(q.round||'موثق')})));
+  };
+  window.startWeakMinisterial=function(){
+    const qs=weakMinisterial();
+    if(!qs.length){toast('لم تسجل أخطاء أو محاولات وزارية بعد 🎯');return;}
+    setView('quiz');
+    renderQuiz(qs.map(q=>({...q,q:q.question,a:q.answer,type:'وزاري • يحتاج تكرار'})));
   };
   window.showSmartReview=function(){
     const pool=typeof quizBank!=='undefined'?quizBank.map(q=>({...q,type:q.type||'تدريب'})):[];
