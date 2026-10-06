@@ -131,7 +131,7 @@ function save(){localStorage.setItem('future100_state',JSON.stringify(state)); u
 function updateStats(){ $('#lessonDone').textContent=Object.keys(state.done).length;$('#correct').textContent=state.correct;$('#streak').textContent=state.streak; }
 function toast(t){$('#toast').textContent=t;$('#toast').classList.add('show');setTimeout(()=>$('#toast').classList.remove('show'),2200)}
 function setView(v){$$('.view').forEach(x=>x.classList.remove('active'));$('#'+v).classList.add('active');$$('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===v)); if(v==='lessons')renderCards(); if(v==='memory')renderMemory(); if(v==='home')renderToday(); if(v==='book')loadBook(bookKey);}
-$('.navbtn[data-view]').forEach(b=>b.onclick=()=>setView(b.dataset.view));
+document.querySelectorAll('.navbtn[data-view]').forEach(b=>b.onclick=()=>setView(b.dataset.view));
 let selected='الكل'; $$('[data-sub]').forEach(b=>b.onclick=()=>{selected=b.dataset.sub;$$('[data-sub]').forEach(x=>x.classList.toggle('active',x===b));setView('lessons');renderCards()});
 $('#search').oninput=renderCards; if($('#bookSearch')) $('#bookSearch').oninput=searchBook;
 function filtered(){let q=($('#search')?.value||'').trim();return lessons.filter(l=>(selected==='الكل'||l.subject===selected)&&(!q||l.title.includes(q)||l.chapter.includes(q)||l.summary.includes(q)));}
@@ -146,7 +146,7 @@ function grade(ok){state.correct+=ok?1:0;state.streak++;if(!ok){let key=current[
 function renderMemory(){let total=Object.values(state.repeat).reduce((a,b)=>a+b,0), done=Object.keys(state.done).length, pct=Math.min(100,Math.round(done/lessons.length*100));$('#ring').style.setProperty('--pct',pct+'%');$('#ringText').textContent=pct+'%';let arr=Object.entries(state.repeat).sort((a,b)=>b[1]-a[1]).slice(0,8);$('#repeatList').innerHTML=arr.length?arr.map(([q,n])=>`<div class="rep"><span>${q}</span><b>${n}×</b></div>`).join(''):'<div class="empty">لا توجد أخطاء مسجلة بعد. ابدأ بالأسئلة.</div>'}
 let bookCache={},bookPages=[],bookIndex=0,bookKey='geography';
 async function loadBook(key='geography'){
- bookKey=key; $('.bookTab').forEach(b=>b.classList.toggle('active',b.dataset.book===key));
+ bookKey=key; document.querySelectorAll('.bookTab').forEach(b=>b.classList.toggle('active',b.dataset.book===key));
  const status=$('#bookStatus'); status.textContent='جاري تحميل الكتاب...';
  try{
   if(!bookCache[key]){const r=await fetch('book-'+key+'.txt',{cache:'force-cache'});if(!r.ok)throw new Error('HTTP '+r.status);bookCache[key]=await r.text();}
