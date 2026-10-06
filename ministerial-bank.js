@@ -156,6 +156,16 @@
       sourceUrl:'https://mlazemna.com/sa26ga/',
       verified:true,
       type:'وزاري'
+    },
+    {
+      id:'min_2026_r1_geography_plant_ranges',
+      question:'عدّد نطاقات النباتات الطبيعية في العراق.',
+      answer:'1- نطاق الغابات والأعشاب الجبلية. 2- نطاق السهوب (الاستبس). 3- نطاق ضفاف الأنهار. 4- نطاق نباتات الأهوار والمستنقعات. 5- نطاق النباتات الصحراوية.',
+      subject:'الجغرافية', lessonId:12, chapter:'الخصائص الطبيعية لجغرافية العراق',
+      year:2026, round:'الدور الأول', sourceId:'social_2026_r1',
+      sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/en/blog/social_3rd_intermediate_2026_round1',
+      verified:true, type:'وزاري'
     }
   ];
 
