@@ -46,12 +46,12 @@
     const out=[];
     for(const p of picked){
       const t=clean(p.text);
-      const m=t.match(/(?:الأسئل[ةـ]|الاسئله)([\\s\\S]{0,12000})/);
+      const m=t.match(/(?:الأسئل[ةـ]|الاسئله)([\s\S]{0,12000})/);
       if(!m) continue;
       const block=m[1];
-      const re=/(?:س\\s*\\.?\\s*|س\\.?\\s*\\d+\\s*\\.?\\s*)([^؟\\n]{8,240}؟?)/g;
+      const re=/(?:س\s*\.?\s*|س\.?\s*\d+\s*\.?\s*)([^؟\n]{8,240}؟?)/g;
       let q; while((q=re.exec(block))){
-        const question=clean(q[1]).replace(/^[:.\\- ]+/,'');
+        const question=clean(q[1]).replace(/^[:.\- ]+/,'');
         if(question.length>=8) out.push({question,answer:'',page:p.page});
       }
     }
@@ -67,14 +67,14 @@
     const ministerial=[];
     ss.filter(x=>/(هو|هي|يعرف|تعرف|يقصد|المقصود|عبارة عن|تتكون|يتكون|يطلق على)/.test(x))
       .slice(0,8).forEach(x=>{
-        const term=(l.title||'المفهوم').replace(/^(ما|تعريف|درس)\\s+/,'');
+        const term=(l.title||'المفهوم').replace(/^(ما|تعريف|درس)\s+/,'');
         defs.push({question:'ما المقصود بـ '+term+'؟',answer:x,source:'الكتاب'});
       });
     ss.filter(x=>/(بسبب|لان|لأن|نظرا|نتيجة|يعود ذلك|يؤدي الى|تؤدي الى|يسبب|يسهم)/.test(x))
       .slice(0,8).forEach(x=>reasons.push({question:'علل/فسر: '+x,answer:x,source:'الكتاب'}));
-    const listLines=raw.split(/(?=\\b(?:[1-9]|10|11|12|13|14|15)[.)]\\s)/).map(clean)
-      .filter(x=>/^\\d+[.)]\\s/.test(x)&&x.length<500);
-    if(listLines.length>=2) enumers.push({question:'عدد/اذكر ما يأتي:',answer:listLines.slice(0,10).map(x=>x.replace(/^\\d+[.)]\\s*/,'')),source:'الكتاب'});
+    const listLines=raw.split(/(?=\b(?:[1-9]|10|11|12|13|14|15)[.)]\s)/).map(clean)
+      .filter(x=>/^\d+[.)]\s/.test(x)&&x.length<500);
+    if(listLines.length>=2) enumers.push({question:'عدد/اذكر ما يأتي:',answer:listLines.slice(0,10).map(x=>x.replace(/^\d+[.)]\s*/,'')),source:'الكتاب'});
     ss.slice(0,8).forEach(x=>{
       const words=x.split(' ').filter(Boolean);
       if(words.length>=9){
