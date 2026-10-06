@@ -149,7 +149,6 @@ $('#search').oninput=renderCards; if($('#bookSearch')) $('#bookSearch').oninput=
 function filtered(){let q=($('#search')?.value||'').trim();return lessons.filter(l=>(selected==='الكل'||l.subject===selected)&&(!q||l.title.includes(q)||l.chapter.includes(q)||l.summary.includes(q)));}
 function renderCards(){let arr=filtered();$('#cards').innerHTML=arr.map(l=>'<article class="lesson"><span class="tag">'+l.subject+' • '+l.unit+'</span><h3>'+l.id+'. '+l.title+'</h3><p>'+l.summary+'</p><div class="progress"><div class="bar" style="width:'+(state.done[l.id]?100:0)+'%"></div></div><div class="actions"><button class="primary" onclick="startStudy('+l.id+')">'+(state.done[l.id]?'مراجعة الدرس':'ابدأ الدرس')+' ←</button><button class="ghost" onclick="startQuizFor('+l.id+')">سؤال</button></div></article>').join('')||'<div class="empty">لا توجد نتائج.</div>';}
 async function openMasteryMap(){
-  setView('masteryMap');
   const box=$('#masteryMapContent'),summary=$('#masterySummary');
   box.innerHTML='<div class="empty">⏳ جاري حساب إتقان الدروس الـ62…</div>';
   const rows=[];
