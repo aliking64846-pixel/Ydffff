@@ -166,6 +166,30 @@
       sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
       sourceUrl:'https://yudrik.com/en/blog/social_3rd_intermediate_2026_round1',
       verified:true, type:'وزاري'
+    },
+    {
+      id:'min_2026_r1_geography_oil_transport',
+      question:'عرّف النفط الخام، وعدّد طرق نقل النفط في العراق.',
+      answer:'النفط الخام من أهم الثروات الطبيعية ويُسمى الذهب الأسود. ومن طرق نقله في العراق: الأنابيب، والسفن، والنقل البري بواسطة القاطرات على سكك الحديد والسيارات الحوضية.',
+      subject:'الجغرافية', lessonId:27, chapter:'الخصائص البشرية لجغرافية العراق', year:2026, round:'الدور الأول',
+      sourceId:'social_2026_r1', sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/en/blog/social_3rd_intermediate_2026_round1', verified:true, type:'وزاري'
+    },
+    {
+      id:'min_2026_r1_history_ottoman_revolts',
+      question:'وضح زيادة المعارضة العراقية ضد الحكم العثماني مع ذكر أبرز الانتفاضات.',
+      answer:'تزايدت المعارضة العراقية مع ضعف الدولة العثمانية والتدخلات الأجنبية، ومن أبرزها انتفاضة كربلاء عام 1604م وانتفاضة بغداد عام 1832م بقيادة المفتي عبد الغني آل جميل.',
+      subject:'التاريخ', lessonId:31, chapter:'العراق في العهد العثماني', year:2026, round:'الدور الأول',
+      sourceId:'social_2026_r1', sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/en/blog/social_3rd_intermediate_2026_round1', verified:true, type:'وزاري'
+    },
+    {
+      id:'min_2026_r1_history_medhat_reforms',
+      question:'علل: لإصلاحات الوالي مدحت باشا أهمية كبيرة رغم قصر مدة ولايته.',
+      answer:'لأنه أحدث تحولاً مهماً في الواقع العراقي، فشملت إصلاحاته التعليم والصحافة والجيش وتحديث المدن وحل مشكلة الأراضي وتوطين العشائر، مما أوجد أساساً متيناً لعهد جديد.',
+      subject:'التاريخ', lessonId:34, chapter:'العراق في العهد العثماني', year:2026, round:'الدور الأول',
+      sourceId:'social_2026_r1', sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/en/blog/social_3rd_intermediate_2026_round1', verified:true, type:'وزاري'
     }
   ];
 
