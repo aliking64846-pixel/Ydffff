@@ -190,6 +190,46 @@
       subject:'التاريخ', lessonId:34, chapter:'العراق في العهد العثماني', year:2026, round:'الدور الأول',
       sourceId:'social_2026_r1', sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
       sourceUrl:'https://yudrik.com/en/blog/social_3rd_intermediate_2026_round1', verified:true, type:'وزاري'
+    },
+    {
+      id:'min_2026_r1_history_european_intervention',
+      question:'علل: تدخل القوى الأوروبية، لاسيما البريطانية والفرنسية والألمانية، في أوضاع العراق.',
+      answer:'بسبب ضعف الدولة العثمانية في إدارة شؤون البلاد الداخلية، وللاستفادة من موقع العراق الجغرافي المتميز وثرواته الاقتصادية واستغلاله سوقاً لتصريف البضائع.',
+      subject:'التاريخ', lessonId:35, chapter:'العراق في العهد العثماني', year:2026, round:'الدور الأول',
+      sourceId:'social_2026_r1', sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/en/blog/social_3rd_intermediate_2026_round1', verified:true, type:'وزاري'
+    },
+    {
+      id:'min_2026_r1_geography_natural_vegetation_false',
+      question:'النبات الطبيعي هو النبات الذي ينمو عن طريق زراعة الإنسان له في مواسم معينة.',
+      answer:'خطأ. النبات الطبيعي هو النبات الذي ينمو طبيعياً دون تدخل الإنسان في إنباته.',
+      subject:'الجغرافية', lessonId:12, chapter:'الخصائص الطبيعية لجغرافية العراق', year:2026, round:'الدور الأول',
+      sourceId:'social_2026_r1', sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/en/blog/social_3rd_intermediate_2026_round1', verified:true, type:'وزاري'
+    },
+    {
+      id:'min_2026_r1_geography_transport_false',
+      question:'تتميز طرق النقل النهرية بأنها الأكثر طولاً والأوسع انتشاراً.',
+      answer:'خطأ. تتميز طرق النقل البرية، كالسيارات وسكك الحديد، بأنها الأكثر طولاً والأوسع انتشاراً.',
+      subject:'الجغرافية', lessonId:27, chapter:'الخصائص البشرية لجغرافية العراق', year:2026, round:'الدور الأول',
+      sourceId:'social_2026_r1', sourceLabel:'تفريغ سؤال وزاري 2026 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/en/blog/social_3rd_intermediate_2026_round1', verified:true, type:'وزاري'
+    },
+    {
+      id:'min_2025_r1_reasons_flatlands',
+      question:'علل: يفضل السكان عادة السكن في المناطق السهلية.',
+      answer:'لما تتمتع به من سهولة التنقل والتربة الخصبة وإمكانية القيام بالعمليات الزراعية والنشاطات الاقتصادية الأخرى.',
+      subject:'الجغرافية', lessonId:5, chapter:'الخصائص الطبيعية لجغرافية العراق', year:2025, round:'الدور الأول',
+      sourceId:'social_2025_r1_detail', sourceLabel:'تفريغ سؤال وزاري 2025 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/ar/blog/social_3rd_intermediate_2025_round1', verified:true, type:'وزاري'
+    },
+    {
+      id:'min_2025_r1_reasons_twenty',
+      question:'علل: تعد ثورة العشرين في العراق حدثاً مهماً في تاريخه المعاصر.',
+      answer:'لأنها تمثل مرحلة تاريخية مهمة من مراحل نضال الشعب العراقي ضد المحتل لنيل الحرية والاستقلال.',
+      subject:'التاريخ', lessonId:40, chapter:'العراق في أثناء الحرب العالمية الأولى وبعدها', year:2025, round:'الدور الأول',
+      sourceId:'social_2025_r1_detail', sourceLabel:'تفريغ سؤال وزاري 2025 الدور الأول مع الحل المنشور',
+      sourceUrl:'https://yudrik.com/ar/blog/social_3rd_intermediate_2025_round1', verified:true, type:'وزاري'
     }
   ];
 
