@@ -142,6 +142,31 @@ body{padding-bottom:70px}
 </div>
 <div class="toast" id="toast"></div>
 <script>
+(function(){
+  window.__future100SafeNavigate=function(v){
+    try{
+      document.querySelectorAll('.view').forEach(function(x){x.classList.remove('active');});
+      var target=document.getElementById(v);
+      if(!target)return false;
+      target.classList.add('active');
+      document.querySelectorAll('.navbtn').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-view')===v);});
+      return true;
+    }catch(e){return false;}
+  };
+  document.addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('.navbtn[data-view]');
+    if(!b)return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    var v=b.getAttribute('data-view');
+    if(v==='exam' && typeof window.startExam==='function'){
+      try{window.startExam();return;}catch(_e){}
+    }
+    window.__future100SafeNavigate(v);
+  },true);
+})();
+</script>
+<script>
 /* GLOBAL RUNTIME STATE */
 
 
