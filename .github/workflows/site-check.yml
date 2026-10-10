@@ -19,7 +19,7 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           set -e
-          for file in assets/js/*.js ministerial-bank.js learning-engine.js study-content.js; do
+          for file in assets/js/*.js; do
             echo "Checking $file"
             node --check "$file"
           done
