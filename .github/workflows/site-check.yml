@@ -1,0 +1,59 @@
+name: Site integrity check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check JavaScript syntax
+        run: |
+          set -e
+          for file in assets/js/*.js ministerial-bank.js learning-engine.js study-content.js; do
+            echo "Checking $file"
+            node --check "$file"
+          done
+      - name: Check required site files and lesson data
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json, re, sys
+
+          root = Path(".")
+          html = (root / "index.html").read_text(encoding="utf-8")
+          errors = []
+          for path in re.findall(r'<script\s+src=["\']([^"\']+)["\']', html):
+              if not path.startswith(("http://", "https://", "//")) and not (root / path).is_file():
+                  errors.append(f"Missing script: {path}")
+          for path in re.findall(r'<link[^>]+href=["\']([^"\']+)["\']', html):
+              if not path.startswith(("http://", "https://", "//", "#")) and not (root / path).is_file():
+                  errors.append(f"Missing stylesheet/resource: {path}")
+          for name in ("book-front.txt", "book-geography.txt", "book-history.txt", "book-national.txt"):
+              if not (root / name).is_file():
+                  errors.append(f"Missing textbook file: {name}")
+          app = (root / "assets/js/app.js").read_text(encoding="utf-8")
+          match = re.search(r'const lessons = (\[.*?\]);', app, re.S)
+          if not match:
+              errors.append("Could not locate lesson data in app.js")
+          else:
+              try:
+                  lessons = json.loads(match.group(1))
+                  if len(lessons) != 62:
+                      errors.append(f"Expected 62 lessons, found {len(lessons)}")
+              except Exception as exc:
+                  errors.append(f"Lesson data is not valid JSON: {exc}")
+          if errors:
+              print("\n".join("ERROR: " + item for item in errors))
+              sys.exit(1)
+          print("OK: local files exist and all 62 lessons are present.")
+          PY
