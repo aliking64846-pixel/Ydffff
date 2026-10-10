@@ -184,63 +184,39 @@ body{padding-bottom:70px}
 
   document.addEventListener('click',function(e){
     try{
-      var el=e.target&&e.target.closest?e.target.closest('[data-view],#moreBtn,[onclick]'):null;
+      var el=e.target&&e.target.closest?e.target.closest('[data-view],#moreBtn'):null;
       if(!el)return;
 
-      var v=el.getAttribute('data-view');
-      if(v){
-        e.preventDefault();e.stopImmediatePropagation();
-        if(v==='exam')run('startExam','exam');else safeView(v);
-        return;
-      }
-
       if(el.id==='moreBtn'){
-        e.preventDefault();e.stopImmediatePropagation();
+        e.preventDefault();
+        e.stopImmediatePropagation();
         toggleMore();
         return;
       }
 
-      var oc=el.getAttribute('onclick')||'';
-      if(!oc)return;
+      var v=el.getAttribute('data-view');
+      if(!v)return;
 
-      var m=oc.match(/setView\(['"]([^'"]+)['"]\)/);
-      if(m){
-        e.preventDefault();e.stopImmediatePropagation();
-        var page=m[1];
-        if(/renderMinistryDashboard/.test(oc)){
-          if(!run('renderMinistryDashboard','ministry'))safeView('ministry');
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      /* Keep navigation isolated, but use the app's real setView renderer
+         so each page initializes its own content and data. */
+      try{
+        if(v==='exam' && typeof window.startExam==='function'){
+          window.startExam();
+        }else if(typeof window.setView==='function'){
+          window.setView(v);
         }else{
-          safeView(page);
+          safeView(v);
         }
-        return;
+      }catch(navError){
+        console.error('Future100 navigation error:',navError);
+        safeView(v);
       }
-
-      var actions=[
-        ['openMasteryMap','masteryMap'],
-        ['openExamPlan','examPlan'],
-        ['openPerformance','performance'],
-        ['openNightReview','nightReview'],
-        ['showMistakes','mistakes'],
-        ['showSmartReview','memory'],
-        ['showMinistry','ministry'],
-        ['startMinisterialFilteredQuiz','quiz'],
-        ['startMinisterialExam','exam'],
-        ['startMinisterialPaper','exam'],
-        ['startMinisterialMistakes','quiz'],
-        ['startMinisterialDue','quiz'],
-        ['startMasteryMission','masteryMap'],
-        ['startChapterTest','chapter'],
-        ['startStudy','study'],
-        ['startExam','exam']
-      ];
-      for(var i=0;i<actions.length;i++){
-        if(oc.indexOf(actions[i][0]+'(')!==-1){
-          e.preventDefault();e.stopImmediatePropagation();
-          run(actions[i][0],actions[i][1]);
-          return;
-        }
-      }
-    }catch(err){}
+    }catch(err){
+      console.error('Future100 click router error:',err);
+    }
   },true);
 
   document.addEventListener('click',function(e){
