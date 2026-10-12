@@ -40,15 +40,10 @@
 
   document.addEventListener('click',function(e){
     try{
-      var el=e.target&&e.target.closest?e.target.closest('[data-view],#moreBtn'):null;
+      /* The More button is handled by the app's own toggleMoreMenu()
+         so its first click opens and its second click closes the menu. */
+      var el=e.target&&e.target.closest?e.target.closest('[data-view]'):null;
       if(!el)return;
-
-      if(el.id==='moreBtn'){
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        toggleMore();
-        return;
-      }
 
       var v=el.getAttribute('data-view');
       if(!v)return;
