@@ -169,3 +169,27 @@ body{padding-bottom:70px}
   .navbtn small { font-size: 9px; }
   .navbtn span { font-size: 19px; width: 28px; }
 }
+
+
+/* FUTURE100 — Calm Instagram-style mobile navigation auto-hide */
+@media (max-width: 800px) {
+  .nav {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+    visibility: visible;
+    transition:
+      transform 320ms cubic-bezier(.22, .75, .25, 1),
+      opacity 220ms ease,
+      box-shadow 320ms ease;
+    will-change: transform, opacity;
+  }
+  .nav.nav-scroll-hidden {
+    transform: translate3d(0, calc(100% + 14px + env(safe-area-inset-bottom, 0px)), 0);
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav { transition: none !important; }
+}
