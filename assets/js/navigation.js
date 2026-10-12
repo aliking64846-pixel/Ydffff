@@ -42,6 +42,14 @@
     try{
       /* The More button is handled by the app's own toggleMoreMenu()
          so its first click opens and its second click closes the menu. */
+      var moreButton=e.target&&e.target.closest?e.target.closest('#moreBtn'):null;
+      if(moreButton){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        toggleMore();
+        return;
+      }
+
       var el=e.target&&e.target.closest?e.target.closest('[data-view]'):null;
       if(!el)return;
 
