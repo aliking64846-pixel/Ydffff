@@ -146,12 +146,3 @@
   }, { passive: true });
 })();
 
-/* Close the More menu automatically after any menu button is selected.
-   Runs after inline button actions, so the selected action still executes. */
-document.addEventListener('click', function (e) {
-  try {
-    var menu = document.getElementById('moreMenu');
-    var button = e.target && e.target.closest ? e.target.closest('#moreMenu button') : null;
-    if (menu && button) menu.classList.remove('open');
-  } catch (err) {}
-}, false);
