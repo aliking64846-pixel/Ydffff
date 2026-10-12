@@ -27,20 +27,35 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          from urllib.parse import urlsplit
           import json, re, sys
 
           root = Path(".")
           html = (root / "index.html").read_text(encoding="utf-8")
           errors = []
-          for path in re.findall(r'<script\s+src=["\']([^"\']+)["\']', html):
-              if not path.startswith(("http://", "https://", "//")) and not (root / path).is_file():
-                  errors.append(f"Missing script: {path}")
-          for path in re.findall(r'<link[^>]+href=["\']([^"\']+)["\']', html):
-              if not path.startswith(("http://", "https://", "//", "#")) and not (root / path).is_file():
-                  errors.append(f"Missing stylesheet/resource: {path}")
+
+          def local_path(reference):
+              # Cache-busting query strings and fragments are not part of filenames.
+              return urlsplit(reference).path
+
+          for reference in re.findall(r'<script\s+src=["\']([^"\']+)["\']', html):
+              if reference.startswith(("http://", "https://", "//")):
+                  continue
+              path = local_path(reference)
+              if path and not (root / path).is_file():
+                  errors.append(f"Missing script: {reference}")
+
+          for reference in re.findall(r'<link[^>]+href=["\']([^"\']+)["\']', html):
+              if reference.startswith(("http://", "https://", "//", "#")):
+                  continue
+              path = local_path(reference)
+              if path and not (root / path).is_file():
+                  errors.append(f"Missing stylesheet/resource: {reference}")
+
           for name in ("book-front.txt", "book-geography.txt", "book-history.txt", "book-national.txt"):
               if not (root / name).is_file():
                   errors.append(f"Missing textbook file: {name}")
+
           app = (root / "assets/js/app.js").read_text(encoding="utf-8")
           match = re.search(r'const lessons = (\[.*?\]);', app, re.S)
           if not match:
@@ -52,8 +67,9 @@ jobs:
                       errors.append(f"Expected 62 lessons, found {len(lessons)}")
               except Exception as exc:
                   errors.append(f"Lesson data is not valid JSON: {exc}")
+
           if errors:
-              print("\n".join("ERROR: " + item for item in errors))
+              print("\\n".join("ERROR: " + item for item in errors))
               sys.exit(1)
           print("OK: local files exist and all 62 lessons are present.")
           PY
