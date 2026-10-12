@@ -235,3 +235,69 @@ body{background:#F3F7FC!important;color:#18263A!important}
  .top{background:rgba(255,255,255,.97)!important}
  .nav{background:#FFFFFF!important}
 }
+
+
+/* FUTURE100 LIGHT THEME CONSISTENCY FIX */
+:root{--bg:#F3F7FC;--panel:#FFFFFF;--panel2:#F7FAFE;--line:#D8E3F0;--cyan:#00A6C7;--blue:#2368D8;--green:#16845D;--purple:#7353C6;--gold:#A87308;--text:#18263A;--muted:#68788D;--red:#C93650}
+body{background:#F3F7FC!important;color:#18263A!important}
+.top,.nav,.moreMenu,.leftBox,.recentCard,.panelBox,.lessonHead,.lessonBody,.quizcard,.brain,.examPanel,.lesson,.kpi,.memory .m,.examOpt,.answerFake,.step,.phone,.phoneToday,.phoneGoal,.phoneSubjects span,.subjectBtn,.lessonTabs button,.toolbar .filter,.toolbar .ghost,.weakStrip,.promo,.contentSection,.studyItem,.lessonCard,.analyticsCard,.auditItem,.ministryHero,.ministryStat,.ministryCard,.ministryFilters select,.ministryEmpty,.ministryActions button,.ministryBadge{
+ background:#FFFFFF!important;color:#18263A!important;border-color:#D8E3F0!important;box-shadow:0 6px 18px rgba(24,38,58,.045)!important
+}
+.top{background:rgba(255,255,255,.96)!important}
+.nav{background:#FFFFFF!important;border-color:#D8E3F0!important}
+.navbtn{background:transparent!important;color:#52657D!important;border-color:transparent!important}
+.navbtn:hover{background:#F0F6FF!important;color:#2368D8!important}
+.navbtn.active{background:#EAF2FF!important;color:#2368D8!important;border-color:#C8DBFA!important;box-shadow:none!important}
+.navbtn.active span,.navbtn.active small{color:#2368D8!important}
+.moreMenu{background:#FFFFFF!important}
+.moreMenu button{background:#F3F7FC!important;color:#18263A!important;border-color:#D8E3F0!important}
+.searchTop,.search,.ministryFilters select,input,textarea,select{background:#FFFFFF!important;color:#18263A!important;border-color:#D4DFEC!important}
+input::placeholder,textarea::placeholder,.searchTop::placeholder,.search::placeholder{color:#68788D!important}
+h1,h2,h3,h4,h5,h6,.brand b,.logoTitle b,.phoneHead b,.lessonCard b,.studyItem b,.contentSection h3{color:#18263A!important}
+.brand small,.logoTitle small,.recentCard p,.recentCard small,.phoneToday small,.phoneSubjects b,.phoneGoal small,.lesson p,.lessonBody,.panelBox p,.brainFace p,.promo p,.statLine,.ministryHero p,.ministryStat span,.ministryCard p,.ministryCount,.ministryEmpty,.analyticsCard small,.studyAnswer,.auditItem,.typeRow,.contentSection p{color:#68788D!important}
+.heroBanner{background:linear-gradient(135deg,#EAF2FF,#DDEEFF 52%,#F7FBFF)!important;border-color:#C6D8F1!important}
+.heroBanner:before{background:linear-gradient(180deg,transparent,#EAF2FF)!important}
+.heroCopy span,.heroCopy h1,.heroCopy h1 strong,.heroCopy p{color:#18263A!important}
+.feature.green{background:linear-gradient(145deg,#DDF7EE,#BFEBDD)!important;color:#126B55!important}
+.feature.purple{background:linear-gradient(145deg,#EEE7FF,#DCCFFF)!important;color:#5A3DA3!important}
+.feature.blue{background:linear-gradient(145deg,#DCEBFF,#BBD9FF)!important;color:#174D9D!important}
+.feature.gold{background:linear-gradient(145deg,#FFF2D5,#FFE0A1)!important;color:#805300!important}
+.feature small{color:#40536B!important}
+.primary,.phoneToday button,.finalPromo button,.wideBtn,.ministryActions .primaryM{background:#2368D8!important;color:#FFFFFF!important;border-color:#2368D8!important}
+.primary:hover,.phoneToday button:hover,.wideBtn:hover{background:#1856BD!important}
+.outlineBtn,.goalBox button,.brainPromo button,.ministryActions button{background:#EAF7FB!important;color:#007E9A!important;border:1px solid #9ADDE8!important}
+.subjectBtn{background:#F7FAFE!important;color:#40536B!important}
+.subjectBtn:hover,.subjectBtn.active{background:#E8F8FC!important;color:#2368D8!important;border-color:#00A6C7!important;box-shadow:none!important}
+.sectionTitle button{color:#2368D8!important}
+.goalBox>b,.goalCrown,.crown,.phoneGoal span{color:#A87308!important}
+.goalBar,.miniProgress,.progress,.sessionBar,.typeBar,.masteryLine{background:#E5ECF5!important}
+.goalBar i,.miniProgress i,.bar,.sessionBar i,.masteryLine i,.typeBar i{background:linear-gradient(90deg,#2368D8,#00A6C7)!important}
+.phone{border-color:#C8D5E5!important;background:#FFFFFF!important}
+.phoneNotch{background:#D9E2ED!important}
+.phoneGoal,.phoneToday{background:#F7FAFE!important}
+.phoneRing{background:conic-gradient(#00A6C7 32%,#DCE6F1 0)!important}
+.phoneRing:after,.bigRing:after{background:#FFFFFF!important}
+.phoneSubjects span{background:#F3F7FC!important;color:#2368D8!important}
+.phoneNav{background:#FFFFFF!important;color:#68788D!important;border-color:#D8E3F0!important}
+.lessonTabs button{background:#F3F7FC!important;color:#68788D!important}
+.lessonTabs button.active{background:#2368D8!important;color:#FFFFFF!important}
+.answerFake{background:#F7FAFE!important}
+.answerFake.good,.examOpt.correct{background:#E4F8EF!important;border-color:#83D6B1!important;color:#176B4B!important}
+.examOpt.wrong{background:#FFF0F2!important;border-color:#E8A1AE!important;color:#A5253E!important}
+.pill.greenP{color:#176B4B!important;background:#E4F8EF!important;border-color:#A7E5C8!important}
+.pill.purpleP{color:#5A3DA3!important;background:#F0EAFE!important;border-color:#D4C5FA!important}
+.pill.blueP{color:#174D9D!important;background:#E7F0FF!important;border-color:#B9D2FF!important}
+.statLine b,.okTag{color:#16845D!important}.badTag{color:#C93650!important}
+.warning{background:#FFF6DB!important;border-color:#EACD7D!important;color:#795500!important}
+.warning.critical{background:#FFF0F2!important;border-color:#E8A1AE!important;color:#A5253E!important}
+.nightHero{background:linear-gradient(135deg,#EAF2FF,#F7FAFE)!important;border-color:#C6D8F1!important}
+.ministryMeta span{background:#E7F0FF!important;color:#174D9D!important;border-color:#B9D2FF!important}
+.ministryBadge b{color:#007E9A!important}
+.contentSection h3{color:#2368D8!important}
+.studyItem b{color:#18263A!important}
+@media(max-width:800px){
+ .nav{background:rgba(255,255,255,.97)!important;border-color:#D8E3F0!important;box-shadow:0 10px 28px rgba(24,38,58,.14)!important}
+ .navbtn{background:transparent!important}
+ .navbtn.active{background:#EAF2FF!important}
+ .moreMenu{background:#FFFFFF!important}
+}
