@@ -24,22 +24,37 @@
     if(l.subject==='التربية الوطنية والاجتماعية') return 'national';
     return 'front';
   }
-  function scoreTitle(title,text){
-    const stop=new Set(['العراق','العراقي','العراقيه','العربية','العربي','درس','الوحدة','الفصل','من','في','الى','على','عن','مع','و','او','هو','هي','هذا','هذه']);
-    const words=[...new Set(norm(title).split(' ').filter(x=>x.length>3&&!stop.has(x)))];
-    const n=norm(text);
-    return words.reduce((s,w)=>s+(n.includes(w)?1:0),0);
+  const stopWords=new Set(['العراق','العراقي','العراقيه','العربية','العربي','درس','الوحدة','الفصل','من','في','الى','على','عن','مع','و','او','هو','هي','هذا','هذه','التي','الذي','التي','بعض','اهم','اهمية','يتعرف','يفهم','يدرس','يراجع','يحدد','يميز','بين','ضمن','حول','كما','وقد','كان','تكون','يكون','التي']);
+  function tokens(s){
+    return [...new Set(norm(s).split(' ').filter(x=>x.length>3&&!stopWords.has(x)))];
+  }
+  function scoreTitle(title,summary,text){
+    const n=norm(text), titleNorm=norm(title);
+    const titleWords=tokens(title), summaryWords=tokens(summary).filter(w=>!titleWords.includes(w)).slice(0,18);
+    let score=0;
+    for(const w of titleWords) if(n.includes(w)) score+=4;
+    for(const w of summaryWords) if(n.includes(w)) score+=0.7;
+    if(titleNorm.length>5&&n.includes(titleNorm)) score+=8;
+    return score;
   }
   function pickPages(l,ps){
-    const scored=ps.map(p=>({p,s:scoreTitle(l.title,p.text)})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s);
-    if(!scored.length) return [];
-    const best=scored[0].s;
-    const anchors=scored.filter(x=>x.s===best).slice(0,6).map(x=>x.p.page).sort((a,b)=>a-b);
-    const ranges=[];
-    anchors.forEach(p=>ranges.push([Math.max(1,p-1),Math.min(160,p+2)]));
-    const selected=new Set();
-    ranges.forEach(r=>ps.filter(p=>p.page>=r[0]&&p.page<=r[1]).forEach(p=>selected.add(p.page)));
-    return ps.filter(p=>selected.has(p.page));
+    if(!ps.length) return [];
+    const ordered=ps.slice().sort((a,b)=>a.page-b.page);
+    const scored=ordered.map(p=>({p,s:scoreTitle(l.title,l.summary,p.text)}));
+    const max=Math.max(0,...scored.map(x=>x.s));
+    if(max===0) return [];
+    // Keep one contiguous passage around the strongest match. This avoids mixing
+    // unrelated pages that happen to contain common words such as "العراق".
+    const width=Math.min(5,ordered.length);
+    let bestStart=0,bestScore=-1;
+    for(let i=0;i<=ordered.length-width;i++){
+      let total=0;
+      for(let j=i;j<i+width;j++) total+=scored[j].s;
+      if(total>bestScore){bestScore=total;bestStart=i;}
+    }
+    const start=Math.max(0,bestStart-1);
+    const end=Math.min(ordered.length,bestStart+width+1);
+    return ordered.slice(start,end).filter(p=>p.text&&p.text.length>0);
   }
   function clean(s){return s.replace(/\s+/g,' ').trim()}
   function sentences(text){return text.split(/(?<=[.!؟:؛])\s+/).map(clean).filter(x=>x.length>=25&&x.length<=360)}
