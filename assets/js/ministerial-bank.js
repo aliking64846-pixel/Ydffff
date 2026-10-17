@@ -404,6 +404,17 @@
 
   ];
 
+  // A question is trusted only when its text, answer and source record exist.
+  // Some older records referenced a source ID that was never registered; keep those out of exams.
+  function isVerifiedQuestion(q){
+    if(!q || q.verified!==true || !String(q.question||'').trim() || !String(q.answer||'').trim() || !q.sourceId || !q.sourceUrl || !q.year || !q.round) return false;
+    const source=sources.find(s=>s.id===q.sourceId);
+    return !!source && Number(source.year)===Number(q.year);
+  }
+  function verifiedQuestions(list){
+    return list.filter(isVerifiedQuestion);
+  }
+
   window.Future100MinisterialBank = {
     verifiedCrossChecks: [
       {year:2026,round:'الدور الأول',sources:['https://yudrik.com/en/blog/social_3rd_intermediate_2026_round1','https://iraqedu.net/%D8%A7%D8%B3%D8%A6%D9%84%D8%A9-%D8%A7%D8%AC%D8%AA%D9%85%D8%A7%D8%B9%D9%8A%D8%A7%D8%AA-%D8%A7%D9%84%D8%AF%D9%88%D8%B1-%D8%A7%D9%84%D8%A7%D9%88%D9%84-%D8%A7%D9%84%D8%AB%D8%A7%D9%84%D8%AB-%D9%85%D8%AA%D9%88%D8%B3%D8%B7-26/','https://mlazemna.com/sa26ga/']},
