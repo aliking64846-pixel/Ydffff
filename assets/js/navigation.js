@@ -87,12 +87,8 @@
         m.classList.remove('open');
         return;
       }
-      /* A tap outside the menu closes it; tapping More itself still toggles it. */
-      /* Any navigation-bar tap also dismisses the More menu. */
-      if(e.target.closest('.nav .navbtn')){
-        m.classList.remove('open');
-        return;
-      }
+      /* Main navigation closes the menu in the capture-phase router above.
+         Do not close on #moreBtn here: its own click toggles open/closed. */
       if(!e.target.closest('#moreMenu')&&!e.target.closest('#moreBtn'))m.classList.remove('open');
     }catch(err){}
   },false);
