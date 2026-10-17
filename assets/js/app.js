@@ -262,6 +262,27 @@ function nextExam(){const e=state.exam;if(e.i<e.current.length-1){e.i++;showExam
 function renderMemory(){const arr=Object.entries(state.mastery).sort((a,b)=>(a[1].next||0)-(b[1].next||0)).slice(0,12);const pct=Math.min(100,Math.round(Object.keys(state.done).length/lessons.length*100));$('#ring').style.setProperty('--pct',pct+'%');$('#ringText').textContent=pct+'%';$('#repeatList').innerHTML=arr.length?arr.map(([q,m])=>`<div class="rep"><span>${q}<br><span class="small">إتقان ${m.level}/6 • أخطاء ${m.wrong}</span></span><b>${m.next>Date.now()?'لاحقاً':'راجع الآن'}</b></div>`).join(''):'<div class="empty">ابدأ الاختبار حتى يتعلم النظام نقاط قوتك وضعفك.</div>'}
 document.querySelectorAll('.navbtn[data-view]').forEach(function(b){b.onclick=function(){try{if(b.dataset.view==='exam'){if(typeof startExam==='function')startExam();else setView('exam')}else setView(b.dataset.view)}catch(e){console.error('navigation:',e)}}});
 renderToday();renderMemory();
+// Search bar in the header must actually drive the lesson search.
+(function bindHeaderSearch(){
+  var top=$('.searchTop'), lessonSearch=$('#search');
+  if(!top)return;
+  top.placeholder='ابحث عن درس...';
+  top.setAttribute('aria-label','ابحث عن درس');
+  top.addEventListener('input',function(){
+    if(lessonSearch)lessonSearch.value=top.value;
+    setView('lessons');
+    renderCards();
+  });
+})();
+// The mobile home menu button opens the same menu as the main navigation button.
+document.addEventListener('click',function(e){
+  var button=e.target&&e.target.closest?e.target.closest('.mMenu'):null;
+  if(!button)return;
+  e.preventDefault();
+  e.stopPropagation();
+  var more=$('#moreBtn');
+  if(more)more.click();
+},true);
 
 
 /* VISUAL_DASHBOARD_V3 */
