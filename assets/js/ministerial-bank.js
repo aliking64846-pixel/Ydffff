@@ -453,9 +453,10 @@
     version:'2.8.0',
     sources,
     questions,
-    all(){ return questions.slice(); },
-    byLesson(id){ return questions.filter(q=>q.lessonId===id); },
-    byYear(year){ return questions.filter(q=>Number(q.year)===Number(year)); },
-    byRound(round){ return questions.filter(q=>q.round===round); }
+    isVerifiedQuestion,
+    all(){ return verifiedQuestions(questions).slice(); },
+    byLesson(id){ return verifiedQuestions(questions).filter(q=>Number(q.lessonId)===Number(id)); },
+    byYear(year){ return verifiedQuestions(questions).filter(q=>Number(q.year)===Number(year)); },
+    byRound(round){ return verifiedQuestions(questions).filter(q=>q.round===round); }
   };
 })();
