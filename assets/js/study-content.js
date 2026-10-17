@@ -65,8 +65,33 @@
     const summaryWords=tokens(summary).slice(0,12);
     return summaryWords.reduce((s,w)=>s+(n.includes(w)?0.4:0),0)-(objective?8:0)-(questionPage?6:0);
   }
+  // Verified page ranges follow the textbook's printed contents and section headings.
+  // A lesson may share a page with the neighboring topic; explicit ranges are safer than
+  // guessing from broad summary words or selecting a distant matching page.
+  const lessonPageMap={
+    1:[5,5],2:[6,6],3:[7,7],4:[7,7],5:[7,7],6:[8,9],7:[9,10],8:[11,11],9:[12,12],
+    10:[15,21],11:[22,23],12:[24,27],13:[30,30],14:[31,32],15:[33,35],16:[36,37],
+    17:[38,41],18:[42,42],19:[45,45],20:[46,47],21:[48,49],22:[50,50],23:[51,55],
+    24:[56,58],25:[61,61],26:[61,65],27:[66,69],28:[70,73],29:[74,74],30:[75,77],
+    31:[81,81],32:[82,82],33:[83,84],34:[85,87],35:[88,90],36:[91,95],37:[96,101],
+    38:[102,104],39:[105,113],40:[102,103,114,115,116,117,118],41:[114,115,116,117,118,119],
+    42:[122,123],43:[118,119,120,121,122,123,124,125,126,127],44:[128,129],
+    45:[130,131,132],46:[132,133,134],47:[135,135],
+    48:[138,139],49:[139,140],50:[147,148],51:[147,149],52:[148,149],53:[140,141],
+    54:[142,143],55:[143,146],56:[151,151],57:[152,152],58:[152,152],59:[153,154],
+    60:[155,155],61:[156,157],62:[158,158]
+  };
   function pickPages(l,ps){
     if(!ps.length)return [];
+    const mapped=lessonPageMap[Number(l.id)];
+    if(mapped){
+      const wanted=new Set();
+      if(mapped.length===2&&mapped[1]>=mapped[0]){
+        for(let p=mapped[0];p<=mapped[1];p++)wanted.add(p);
+      }else mapped.forEach(p=>wanted.add(p));
+      const exact=ps.filter(p=>wanted.has(p.page)&&p.text&&p.text.length>0);
+      if(exact.length)return exact;
+    }
     const ordered=ps.slice().sort((a,b)=>a.page-b.page);
     const scored=ordered.map(p=>({p,s:scoreTitle(l.title,l.summary,p.text)}));
     const positive=scored.filter(x=>x.s>0);
