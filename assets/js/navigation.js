@@ -48,6 +48,13 @@
       var v=el.getAttribute('data-view');
       if(!v)return;
 
+      /* Close More before routing a main navigation button. This must run
+         in capture phase because the router stops later click handlers. */
+      if(el.closest('.nav .navbtn')){
+        var openMenu=document.getElementById('moreMenu');
+        if(openMenu)openMenu.classList.remove('open');
+      }
+
       e.preventDefault();
       e.stopImmediatePropagation();
 
