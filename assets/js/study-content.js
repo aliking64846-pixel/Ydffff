@@ -24,37 +24,67 @@
     if(l.subject==='التربية الوطنية والاجتماعية') return 'national';
     return 'front';
   }
-  const stopWords=new Set(['العراق','العراقي','العراقيه','العربية','العربي','درس','الوحدة','الفصل','من','في','الى','على','عن','مع','و','او','هو','هي','هذا','هذه','التي','الذي','التي','بعض','اهم','اهمية','يتعرف','يفهم','يدرس','يراجع','يحدد','يميز','بين','ضمن','حول','كما','وقد','كان','تكون','يكون','التي']);
+  const stopWords=new Set(['العراق','العراقي','العراقيه','العربية','العربي','درس','الوحدة','الفصل','من','في','الى','على','عن','مع','و','او','هو','هي','هذا','هذه','التي','الذي','بعض','اهم','اهمية','يتعرف','يفهم','يدرس','يراجع','يحدد','يميز','بين','ضمن','حول','كما','وقد','كان','تكون','يكون','بعد','الى','الى']);
+  function stripPrefix(w){return w.length>5&&/^[وفبكل]/.test(w)?w.slice(1):w}
   function tokens(s){
-    return [...new Set(norm(s).split(' ').filter(x=>x.length>3&&!stopWords.has(x)))];
+    return [...new Set(norm(s).split(' ').map(stripPrefix).filter(x=>x.length>3&&!stopWords.has(x)))];
+  }
+  function editDistanceOne(a,b){
+    if(a===b)return true;
+    if(Math.abs(a.length-b.length)>1)return false;
+    let i=0,j=0,edits=0;
+    while(i<a.length&&j<b.length){
+      if(a[i]===b[j]){i++;j++;continue;}
+      if(++edits>1)return false;
+      if(a.length>b.length)i++;else if(b.length>a.length)j++;else{i++;j++;}
+    }
+    if(i<a.length||j<b.length)edits++;
+    return edits<=1;
   }
   function scoreTitle(title,summary,text){
     const n=norm(text), titleNorm=norm(title);
-    const titleWords=tokens(title), summaryWords=tokens(summary).filter(w=>!titleWords.includes(w)).slice(0,18);
-    let score=0;
-    for(const w of titleWords) if(n.includes(w)) score+=4;
-    for(const w of summaryWords) if(n.includes(w)) score+=0.7;
-    if(titleNorm.length>5&&n.includes(titleNorm)) score+=8;
-    return score;
+    const titleWords=tokens(title), pageWords=tokens(text);
+    let titleScore=0;
+    for(const w of titleWords){
+      if(pageWords.includes(w)||n.includes(w))titleScore+=5;
+      else if(w.length>=6&&pageWords.some(p=>editDistanceOne(w,p)))titleScore+=3;
+    }
+    if(titleNorm.length>5&&n.includes(titleNorm))titleScore+=14;
+    const objective=/الأهداف السلوكية|األهداف السلوكية|الأهداف التعليمية|األهداف التعليمية/.test(text);
+    const questionPage=/الأسئلة|األسئل|اسئلة|أسئلة/.test(text);
+    if(objective)titleScore-=12;
+    if(questionPage)titleScore-=8;
+    const first=norm(text.slice(0,360));
+    if(titleNorm.length>5&&first.includes(titleNorm))titleScore+=6;
+    if(titleScore>0)return titleScore;
+    // Only use summary words when the title itself is not found anywhere on this page.
+    const summaryWords=tokens(summary).slice(0,12);
+    return summaryWords.reduce((s,w)=>s+(n.includes(w)?0.4:0),0)-(objective?8:0)-(questionPage?6:0);
   }
   function pickPages(l,ps){
-    if(!ps.length) return [];
+    if(!ps.length)return [];
     const ordered=ps.slice().sort((a,b)=>a.page-b.page);
     const scored=ordered.map(p=>({p,s:scoreTitle(l.title,l.summary,p.text)}));
-    const max=Math.max(0,...scored.map(x=>x.s));
-    if(max===0) return [];
-    // Keep one contiguous passage around the strongest match. This avoids mixing
-    // unrelated pages that happen to contain common words such as "العراق".
-    const width=Math.min(5,ordered.length);
-    let bestStart=0,bestScore=-1;
-    for(let i=0;i<=ordered.length-width;i++){
-      let total=0;
-      for(let j=i;j<i+width;j++) total+=scored[j].s;
-      if(total>bestScore){bestScore=total;bestStart=i;}
+    const positive=scored.filter(x=>x.s>0);
+    if(!positive.length)return [];
+    positive.sort((a,b)=>b.s-a.s||a.p.page-b.p.page);
+    const anchor=positive[0].p;
+    const selected=[anchor];
+    // Include the next pages of this lesson only. Stop before a different lesson
+    // heading appears near the top of a page, and never mix distant matching pages.
+    const sameSubject=typeof lessons!=='undefined'?lessons.filter(x=>x.subject===l.subject&&x.id!==l.id):[];
+    const sortedAnchorIndex=ordered.findIndex(p=>p.page===anchor.page);
+    for(let i=sortedAnchorIndex+1;i<ordered.length&&selected.length<4;i++){
+      const p=ordered[i];
+      const top=norm(p.text.slice(0,420));
+      const otherHeading=sameSubject.some(other=>{
+        const title=norm(other.title);
+        return title.length>5&&top.includes(title)&&!(/الأهداف السلوكية|األهداف السلوكية|الأهداف التعليمية|األهداف التعليمية/.test(p.text));
+      });
+      if(otherHeading)break;
+      selected.push(p);
     }
-    const start=Math.max(0,bestStart-1);
-    const end=Math.min(ordered.length,bestStart+width+1);
-    return ordered.slice(start,end).filter(p=>p.text&&p.text.length>0);
+    return selected.filter(p=>p.text&&p.text.length>0);
   }
   function clean(s){return s.replace(/\s+/g,' ').trim()}
   function sentences(text){return text.split(/(?<=[.!؟:؛])\s+/).map(clean).filter(x=>x.length>=25&&x.length<=360)}
@@ -81,7 +111,7 @@
     const raw=clean(picked.map(x=>x.text).join(' '));
     const sourceMissing=raw.length<120;
     const usableRaw=sourceMissing?clean(l.summary):raw;
-    const ss=sentences(usableRaw);
+    const ss=sentences(usableRaw).filter(x=>!/(الأهداف السلوكية|األهداف السلوكية|الأهداف التعليمية|األهداف التعليمية|معلومة إثرائية|نشاط\s*[-–]?|األسئل|الأسئلة|الفصل الدراسي|الصف الثالث)/.test(x));
     const keySentences=sentences(raw).filter(x=>!/(حقوق الطبع|جميع الحقوق|وزارة التربية|الصف الثالث|الفصل الدراسي)/.test(x)).slice(0,5);
     const info=[l.summary,...keySentences.filter(x=>norm(x)!==norm(l.summary))].slice(0,6);
     const defs=[],reasons=[],enumers=[],blanks=[],tf=[];
@@ -89,12 +119,13 @@
     const ministerial=(window.Future100MinisterialBank?.byLesson?.(l.id)||[])
       .filter(q=>q.verified===true&&q.sourceId&&q.sourceUrl&&String(q.answer||'').trim())
       .map(q=>({...q,type:'وزاري موثّق'}));
-    ss.filter(x=>/(هو|هي|يعرف|تعرف|يقصد|المقصود|عبارة عن|تتكون|يتكون|يطلق على)/.test(x))
+    const titleTerms=tokens(l.title);
+    ss.filter(x=>/(هو|هي|يعرف|تعرف|يقصد|المقصود|عبارة عن|تتكون|يتكون|يطلق على)/.test(x)&&titleTerms.some(w=>norm(x).includes(w)))
       .slice(0,8).forEach(x=>{
         const term=(l.title||'المفهوم').replace(/^(ما|تعريف|درس)\s+/,'');
         defs.push({question:'ما المقصود بـ '+term+'؟',answer:x,source:'الكتاب'});
       });
-    ss.filter(x=>/(بسبب|لان|لأن|نظرا|نتيجة|يعود ذلك|يؤدي الى|تؤدي الى|يسبب|يسهم)/.test(x))
+    ss.filter(x=>/(بسبب|لان|لأن|نظرا|نتيجة|يعود ذلك|يؤدي الى|تؤدي الى|يسبب|يسهم)/.test(x)&&titleTerms.some(w=>norm(x).includes(w)))
       .slice(0,8).forEach(x=>reasons.push({question:'علل/فسر: '+x,answer:x,source:'الكتاب'}));
     const listLines=raw.split(/(?=\b(?:[1-9]|10|11|12|13|14|15)[.)]\s)/).map(clean)
       .filter(x=>/^\d+[.)]\s/.test(x)&&x.length<500);
