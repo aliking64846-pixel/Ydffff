@@ -409,7 +409,7 @@
   function isVerifiedQuestion(q){
     if(!q || q.verified!==true || !String(q.question||'').trim() || !String(q.answer||'').trim() || !q.sourceId || !q.sourceUrl || !q.year || !q.round) return false;
     const source=sources.find(s=>s.id===q.sourceId);
-    return !!source && Number(source.year)===Number(q.year);
+    return !!source && Number(source.year)===Number(q.year) && source.round===q.round;
   }
   function verifiedQuestions(list){
     return list.filter(isVerifiedQuestion);
