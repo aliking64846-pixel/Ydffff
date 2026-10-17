@@ -24,7 +24,7 @@
     if(l.subject==='التربية الوطنية والاجتماعية') return 'national';
     return 'front';
   }
-  const stopWords=new Set(['العراق','العراقي','العراقيه','العربية','العربي','درس','الوحدة','الفصل','من','في','الى','على','عن','مع','و','او','هو','هي','هذا','هذه','التي','الذي','بعض','اهم','اهمية','يتعرف','يفهم','يدرس','يراجع','يحدد','يميز','بين','ضمن','حول','كما','وقد','كان','تكون','يكون','بعد','الى','المجتمع','المجتمعات','الاجتماعيه','الاجتماعية','العلاقات','العالقات','الانسان','الانسان','الوطنيه','الوطنية','القيم','الحقوق','الواجبات','العامة','العامه','تاثير','التاثير']);
+  const stopWords=new Set(['العراق','العراقي','العراقيه','العربية','العربي','درس','الوحدة','الفصل','من','في','الى','على','عن','مع','و','او','هو','هي','هذا','هذه','التي','الذي','بعض','اهم','اهمية','يتعرف','يفهم','يدرس','يراجع','يحدد','يميز','بين','ضمن','حول','كما','وقد','كان','تكون','يكون','بعد','الى','المجتمع','المجتمعات','الاجتماعيه','الاجتماعية','العلاقات','العالقات','الانسان','الوطنيه','الوطنية','القيم','الحقوق','الواجبات','العامة','العامه','تاثير','التاثير','المنطقه','الجبليه','موقع','الموقع','نهر','النهر','العهد','العثماني','العثمانيه','الملك','الاول','الاولى','الحرب','العالميه','الشخصيه','المحافظه']);
   function stripPrefix(w){return w.length>5&&/^[وفبكل]/.test(w)?w.slice(1):w}
   function tokens(s){
     return [...new Set(norm(s).split(' ').map(stripPrefix).filter(x=>x.length>3&&!stopWords.has(x)))];
@@ -140,7 +140,7 @@
     const raw=clean(picked.map(x=>x.text).join(' '));
     const sourceMissing=raw.length<120;
     const usableRaw=sourceMissing?clean(l.summary):raw;
-    const ss=sentences(usableRaw).filter(x=>!/(الأهداف السلوكية|األهداف السلوكية|الأهداف التعليمية|األهداف التعليمية|معلومة إثرائية|نشاط\s*[-–]?|األسئل|الأسئلة|الفصل الدراسي|الصف الثالث)/.test(x));
+    const ss=sentences(usableRaw).filter(x=>!/(الأهداف السلوكية|األهداف السلوكية|الأهداف التعليمية|األهداف التعليمية|معلومة إثرائية|هل تعلم|نشاط\s*[-–]?|األسئل|الأسئلة|الفصل الدراسي|الصف الثالث)/.test(x));
     const keySentences=ss.slice(0,5);
     const info=[l.summary,...keySentences.filter(x=>norm(x)!==norm(l.summary))].slice(0,6);
     const defs=[],reasons=[],enumers=[],blanks=[],tf=[];
@@ -182,10 +182,12 @@
       tf.push({question:q.question,answer:q.answer,sourceLabel:q.sourceLabel||q.sourceUrl,source:'وزاري موثّق',verified:true});
     });
     const qbank=(typeof quizBank!=='undefined'?quizBank:[]).filter(x=>{
-      const t=norm((x.q||'')+' '+(x.a||''));
-      const words=norm(l.title).split(' ').filter(w=>w.length>3);
-      return words.some(w=>t.includes(w));
-    }).slice(0,12).map(x=>({question:x.q,answer:x.a,type:x.type||'تدريب'}));
+      const words=titleTerms;
+      if(!words.length)return false;
+      const qText=norm(x.q||'');
+      const hits=words.filter(w=>qText.includes(w));
+      return words.length===1?hits.length===1:hits.length>=Math.min(2,words.length);
+    }).slice(0,12).map(x=>({question:x.q,answer:x.a,type:x.type||'تدريب من بنك التدريب',source:'بنك تدريب داخلي — ليس وزارياً'}));
     for(const q of qbank) chapterQuestions.push(q);
     let fallback=sourceMissing;
     if(chapterQuestions.length<2){
@@ -195,10 +197,14 @@
         {question:'ما الفكرة الأساسية في درس «'+l.title+'»؟',answer:l.summary,source:'تدريب تثبيت — ملخص الدرس'}
       );
     }
-    if(defs.length===0) defs.push({question:'ما المقصود بموضوع درس «'+l.title+'»؟',answer:l.summary,source:'تدريب تثبيت — ملخص الدرس'});
-    if(reasons.length===0) reasons.push({question:'علل أهمية دراسة «'+l.title+'».',answer:'لفهم الأفكار والمعلومات الأساسية الواردة في هذا الدرس وربطها بالأسئلة.',source:'تدريب تثبيت — ليس وزارياً'});
-    if(enumers.length===0) enumers.push({question:'اذكر أهم فكرة في درس «'+l.title+'».',answer:[l.summary],source:'تدريب تثبيت — ليس وزارياً'});
-    if(blanks.length===0) blanks.push({question:'أكمل: يتناول هذا الدرس موضوع ______.',answer:l.title,source:'تدريب تثبيت — ليس وزارياً'});
+    if(defs.length===0){
+      const sourced=ministerial.filter(q=>/عرّف|عرف|ما المقصود/.test(q.question)).slice(0,8);
+      if(sourced.length)sourced.forEach(q=>defs.push({...q,source:'وزاري موثّق',sourceLabel:q.sourceLabel||q.sourceUrl,verified:true}));
+      else defs.push({question:'راجع ملخص الدرس: '+l.title,answer:l.summary,source:'مراجعة ملخص — ليست صيغة تعريف وزاري'});
+    }
+    if(reasons.length===0)ministerial.filter(q=>/علل|فسر/.test(q.question)).slice(0,8).forEach(q=>reasons.push({...q,source:'وزاري موثّق',sourceLabel:q.sourceLabel||q.sourceUrl,verified:true}));
+    if(enumers.length===0)ministerial.filter(q=>/عدد|عدّد|اذكر|وضح/.test(q.question)).slice(0,8).forEach(q=>enumers.push({...q,source:'وزاري موثّق',sourceLabel:q.sourceLabel||q.sourceUrl,verified:true}));
+    if(blanks.length===0)ministerial.filter(q=>/أكمل|اكمل|املأ|املأ|فراغ/.test(q.question)).slice(0,8).forEach(q=>blanks.push({...q,source:'وزاري موثّق',sourceLabel:q.sourceLabel||q.sourceUrl,verified:true}));
     // Leave true/false empty unless a real, answerable item is available.
     // The UI will state that this type has not yet been reviewed.
     return {
