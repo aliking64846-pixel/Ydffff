@@ -52,10 +52,14 @@
     if(titleNorm.length>5&&n.includes(titleNorm))titleScore+=14;
     const objective=/الأهداف السلوكية|األهداف السلوكية|الأهداف التعليمية|األهداف التعليمية/.test(text);
     const questionPage=/الأسئلة|األسئل|اسئلة|أسئلة/.test(text);
-    if(objective)titleScore-=12;
-    if(questionPage)titleScore-=8;
-    const first=norm(text.slice(0,360));
-    if(titleNorm.length>5&&first.includes(titleNorm))titleScore+=6;
+    const questionMarks=(text.match(/(?:^|\s)س\s*\.?\s*\d+|عرف\s+ما\s+يأتي|عدد\s+ما\s+يأتي/g)||[]).length;
+    if(objective)titleScore-=16;
+    if(questionPage)titleScore-=12;
+    if(questionMarks>=2)titleScore-=14;
+    else if(questionMarks===1)titleScore-=5;
+    const first=norm(text.slice(0,520));
+    if(titleNorm.length>5&&n.includes(titleNorm))titleScore+=14;
+    if(titleNorm.length>5&&first.includes(titleNorm))titleScore+=8;
     if(titleScore>0)return titleScore;
     // Only use summary words when the title itself is not found anywhere on this page.
     const summaryWords=tokens(summary).slice(0,12);
