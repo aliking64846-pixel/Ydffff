@@ -107,9 +107,8 @@
         blanks.push({question:x.replace(answer,'________'),answer,source:'مستخرج من نص الكتاب'});
       }
     });
-    ss.filter(x=>!/(نشاط|خريطة|شكل|صفحة|معلومة إثرائية)/.test(x)).slice(0,8).forEach(x=>{
-      tf.push({question:'صح أم خطأ: '+x,answer:true,correction:x,source:'الكتاب'});
-    });
+    // Do not fabricate a false/true exam bank by marking every extracted sentence true.
+    // This section stays empty until the textbook contains a real, answerable statement set.
     const qbank=(typeof quizBank!=='undefined'?quizBank:[]).filter(x=>{
       const t=norm((x.q||'')+' '+(x.a||''));
       const words=norm(l.title).split(' ').filter(w=>w.length>3);
