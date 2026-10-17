@@ -526,7 +526,32 @@ let ministerialExam={questions:[],i:0,score:0,answers:[],chapters:{}};
 var ministerialTimer=null,ministerialTimeLeft=0;
 function stopMinisterialTimer(){if(ministerialTimer){clearInterval(ministerialTimer);ministerialTimer=null;}}
 function startMinisterialTimer(minutes){stopMinisterialTimer();ministerialTimeLeft=minutes*60;ministerialTimer=setInterval(function(){ministerialTimeLeft--;var el=$('#examTimer');if(el){var mm=Math.floor(ministerialTimeLeft/60),ss=ministerialTimeLeft%60;el.textContent='⏱️ '+mm+':'+String(ss).padStart(2,'0');el.style.opacity=ministerialTimeLeft<=60?'1':'.85';}if(ministerialTimeLeft<=0){stopMinisterialTimer();toast('انتهى الوقت ⏰');finishMinisterialExam(true);}},1000);}
-function startMinisterialExam(){var pool=(Future100Learning.smartMinisterial?Future100Learning.smartMinisterial():ministryPool().slice()).slice();if(!pool.length){toast('لا توجد وزاريات موثقة حالياً.');return;}ministerialExam={questions:pool.slice(0,20),i:0,score:0,answers:[],chapters:{},startedAt:Date.now(),gradeLocked:false};setView('exam');showMinisterialExamQ();startMinisterialTimer(30);}
+function chooseDiverseMinisterial(pool,limit){
+  var cleanText=function(s){return String(s||'').replace(/[ًٌٍَُِّْـ]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/[^\u0600-\u06FF0-9a-z]/gi,'').toLowerCase();};
+  var seenQuestions=new Set(),uniquePool=[];
+  pool.forEach(function(q){var key=cleanText(q.question);if(key&&!seenQuestions.has(key)){seenQuestions.add(key);uniquePool.push(q);}});
+  var subjects=[...new Set(uniquePool.map(function(q){return q.subject||'غير محدد';}))];
+  var buckets={};subjects.forEach(function(s){buckets[s]=uniquePool.filter(function(q){return (q.subject||'غير محدد')===s;});});
+  var selected=[],usedLessonBySubject={};
+  while(selected.length<limit){
+    var added=false;
+    subjects.forEach(function(subject){
+      if(selected.length>=limit)return;
+      var bucket=buckets[subject]||[];
+      if(!bucket.length)return;
+      usedLessonBySubject[subject]=usedLessonBySubject[subject]||new Set();
+      var idx=bucket.findIndex(function(q){return !usedLessonBySubject[subject].has(String(q.lessonId||q.chapter||q.id));});
+      if(idx<0)idx=0;
+      var q=bucket.splice(idx,1)[0];
+      if(!q)return;
+      usedLessonBySubject[subject].add(String(q.lessonId||q.chapter||q.id));
+      selected.push(q);added=true;
+    });
+    if(!added)break;
+  }
+  return selected;
+}
+function startMinisterialExam(){var pool=(Future100Learning.smartMinisterial?Future100Learning.smartMinisterial():ministryPool().slice()).slice();if(!pool.length){toast('لا توجد وزاريات موثقة حالياً.');return;}var questions=chooseDiverseMinisterial(pool,20);ministerialExam={questions:questions,i:0,score:0,answers:[],chapters:{},startedAt:Date.now(),gradeLocked:false};setView('exam');showMinisterialExamQ();startMinisterialTimer(30);}
 function showMinisterialExamQ(){var e=ministerialExam,q=e.questions[e.i],m=Future100Learning.ensure(q),pct=Math.round(e.i/e.questions.length*100);$('#examContent').innerHTML='<div class="quizcard"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><div class="qnum">🏆 محاكاة وزاري كاملة • السؤال '+(e.i+1)+' من '+e.questions.length+' • '+(q.year||'')+' '+(q.round||'')+'</div><b id="examTimer">⏱️ 30:00</b></div><div class="sessionBar"><i style="width:'+pct+'%"></i></div><h2>'+q.question+'</h2><div class="examPanel"><span class="pill blueP">الدرس: '+((lessons.find(function(l){return l.id===q.lessonId;})||{}).title||q.chapter||'غير محدد')+'</span><p class="small">إتقانك الحالي: '+(m.mastery||0)+'% • أخطاء: '+(m.wrong||0)+'</p><label class="small" style="display:block;margin:12px 0 7px">✍️ اكتب إجابتك — لن تظهر الإجابة النموذجية أثناء الامتحان</label><textarea id="ministerialAnswer" rows="6" placeholder="اكتب إجابتك هنا..." style="width:100%;resize:vertical;padding:12px;border-radius:10px;background:#061522;border:1px solid #1c4965;color:white;line-height:1.9;outline:none"></textarea><button class="primary" onclick="submitMinisterialAnswer()">تسليم الإجابة ←</button><div id="ministerialExamFeedback"></div></div></div>';}
 function submitMinisterialAnswer(){var e=ministerialExam,q=e.questions[e.i],el=$('#ministerialAnswer');if(!el)return;var answer=el.value.trim();if(!answer){toast('اكتب إجابتك أولاً ✍️');return;}el.disabled=true;var btn=el.nextElementSibling;if(btn)btn.disabled=true;$('#ministerialExamFeedback').innerHTML='<div class="feedback" style="background:#09243a;border:1px solid #17668d"><b>تم تسليم الإجابة ✓</b><br><span class="small">الآن فقط يمكنك مقارنة إجابتك بالإجابة النموذجية.</span><div style="margin-top:10px"><b>الإجابة النموذجية:</b><br>'+q.answer+'</div><div class="actions"><button class="primary" onclick="gradeMinisterialExam(true)">إجابتي صحيحة ✓ +5</button><button class="ghost" onclick="gradeMinisterialExam(false)">إجابتي خاطئة ✗ +0</button></div></div>';}
 function gradeMinisterialExam(ok){var e=ministerialExam,q=e.questions[e.i];if(!q||e.gradeLocked)return;e.gradeLocked=true;if(ok)e.score+=5;else{var key=q.id||q.question;state.repeat[key]=(state.repeat[key]||0)+1;}if(window.Future100Learning)Future100Learning.record(q,ok);save();var chapter=q.chapter||'غير محدد';e.chapters[chapter]=(e.chapters[chapter]||0)+(ok?5:0);e.answers.push({q:q,ok:ok});if(e.i<e.questions.length-1){e.i++;showMinisterialExamQ();}else{finishMinisterialExam();}}
