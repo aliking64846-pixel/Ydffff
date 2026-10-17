@@ -82,7 +82,8 @@
     const sourceMissing=raw.length<120;
     const usableRaw=sourceMissing?clean(l.summary):raw;
     const ss=sentences(usableRaw);
-    const info=[l.summary];
+    const keySentences=sentences(raw).filter(x=>!/(حقوق الطبع|جميع الحقوق|وزارة التربية|الصف الثالث|الفصل الدراسي)/.test(x)).slice(0,5);
+    const info=[l.summary,...keySentences.filter(x=>norm(x)!==norm(l.summary))].slice(0,6);
     const defs=[],reasons=[],enumers=[],blanks=[],tf=[];
     const chapterQuestions=extractQuestionBlocks(picked);
     const ministerial=(window.Future100MinisterialBank?.byLesson?.(l.id)||[]).map(q=>({...q,verified:true,type:'وزاري'}));
