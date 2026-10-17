@@ -49,7 +49,7 @@
   }
   function scoreFor(q){
     const x=db.questions[idOf(q)];
-    if(!x) return 0;
+    if(!x) return 35;
     const dueNow=x.nextReview<=now()?70:0;
     const weak=(100-x.mastery)*1.25;
     const wrong=x.wrong*18;
