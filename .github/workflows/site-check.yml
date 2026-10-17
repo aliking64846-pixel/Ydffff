@@ -107,9 +107,18 @@ jobs:
           if (!content.includes("q.verified===true&&q.sourceId&&q.sourceUrl")) {
             throw new Error('Study content source validation is missing');
           }
+          const mapMatch = content.match(/const lessonPageMap=\{([\s\S]*?)\n  \};/);
+          if (!mapMatch) throw new Error('Explicit lesson-to-page map is missing');
+          const mappedIds = [...mapMatch[1].matchAll(/(?:^|[,\n])\s*(\d+):\[/g)].map(m => Number(m[1]));
+          if (mappedIds.length !== 62 || new Set(mappedIds).size !== 62) {
+            throw new Error('Expected an explicit page mapping for each of the 62 lessons');
+          }
           const app = fs.readFileSync('assets/js/app.js', 'utf8');
           if (!app.includes('bindHeaderSearch') || !app.includes("closest('.mMenu')")) {
             throw new Error('Header search or mobile menu binding is missing');
           }
-          console.log('OK: study content and main navigation safety checks passed.');
+          if (!content.includes("ministerial.filter(q=>/(صح أم خطأ|صح ام خطأ|صح أو خطأ|صح او خطأ)/")) {
+            throw new Error('True/false questions must come from the verified ministerial bank');
+          }
+          console.log('OK: all 62 lessons have mapped pages and generated question types are source-checked.');
           JS
