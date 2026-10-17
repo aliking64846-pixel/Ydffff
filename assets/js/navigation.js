@@ -81,6 +81,11 @@
         return;
       }
       /* A tap outside the menu closes it; tapping More itself still toggles it. */
+      /* Any navigation-bar tap also dismisses the More menu. */
+      if(e.target.closest('.nav .navbtn')){
+        m.classList.remove('open');
+        return;
+      }
       if(!e.target.closest('#moreMenu')&&!e.target.closest('#moreBtn'))m.classList.remove('open');
     }catch(err){}
   },false);
