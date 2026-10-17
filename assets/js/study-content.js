@@ -141,7 +141,7 @@
     const sourceMissing=raw.length<120;
     const usableRaw=sourceMissing?clean(l.summary):raw;
     const ss=sentences(usableRaw).filter(x=>!/(الأهداف السلوكية|األهداف السلوكية|الأهداف التعليمية|األهداف التعليمية|معلومة إثرائية|نشاط\s*[-–]?|األسئل|الأسئلة|الفصل الدراسي|الصف الثالث)/.test(x));
-    const keySentences=sentences(raw).filter(x=>!/(حقوق الطبع|جميع الحقوق|وزارة التربية|الصف الثالث|الفصل الدراسي)/.test(x)).slice(0,5);
+    const keySentences=ss.slice(0,5);
     const info=[l.summary,...keySentences.filter(x=>norm(x)!==norm(l.summary))].slice(0,6);
     const defs=[],reasons=[],enumers=[],blanks=[],tf=[];
     const chapterQuestions=extractQuestionBlocks(picked).filter(q=>String(q.answer||'').trim());
@@ -155,20 +155,32 @@
         defs.push({question:'ما المقصود بـ '+term+'؟',answer:x,source:'الكتاب'});
       });
     ss.filter(x=>/(بسبب|لان|لأن|نظرا|نتيجة|يعود ذلك|يؤدي الى|تؤدي الى|يسبب|يسهم)/.test(x)&&titleTerms.some(w=>norm(x).includes(w)))
-      .slice(0,8).forEach(x=>reasons.push({question:'علل/فسر: '+x,answer:x,source:'الكتاب'}));
+      .slice(0,8).forEach(x=>{
+        const m=x.match(/^(.*?)(بسبب|لأن|لان|نظرا|نتيجة|يعود ذلك|يؤدي الى|تؤدي الى|يسبب|يسهم)(.*)$/);
+        if(!m||m[1].trim().length<12||m[3].trim().length<5)return;
+        const connector=m[2],prefix=m[1].trim(),suffix=m[3].trim();
+        const cause=/بسبب|لأن|لان|نظرا|نتيجة|يعود ذلك/.test(connector);
+        const question=cause?'علل: '+prefix+'؟':'ما نتيجة '+prefix+'؟';
+        const answer=connector+' '+suffix;
+        if(norm(question)!==norm(answer))reasons.push({question,answer,source:'تدريب مستخرج من نص الكتاب — راجع صياغة الكتاب'});
+      });
     const listLines=raw.split(/(?=\b(?:[1-9]|10|11|12|13|14|15)[.)]\s)/).map(clean)
       .filter(x=>/^\d+[.)]\s/.test(x)&&x.length<500);
     if(listLines.length>=2) enumers.push({question:'عدد/اذكر ما يأتي:',answer:listLines.slice(0,10).map(x=>x.replace(/^\d+[.)]\s*/,'')),source:'الكتاب'});
-    ss.slice(0,8).forEach(x=>{
-      const words=x.split(' ').filter(Boolean);
-      if(words.length>=9){
-        const idx=Math.min(words.length-2,Math.max(2,Math.floor(words.length*.55)));
-        const answer=words[idx];
-        blanks.push({question:x.replace(answer,'________'),answer,source:'مستخرج من نص الكتاب'});
-      }
+    ss.slice(0,12).forEach(x=>{
+      const candidates=x.split(/\s+/).filter(w=>{
+        const cleanWord=norm(w);
+        return /^[\u0600-\u06FF]{4,}$/.test(w)&&!stopWords.has(cleanWord)&&!/^\d+$/.test(cleanWord);
+      });
+      if(candidates.length<2)return;
+      const answer=candidates[Math.min(candidates.length-1,Math.floor(candidates.length*.55))];
+      if(!answer||!x.includes(answer))return;
+      blanks.push({question:x.replace(answer,'________'),answer,source:'تدريب إكمال من نص الكتاب'});
     });
-    // Do not fabricate a false/true exam bank by marking every extracted sentence true.
-    // This section stays empty until the textbook contains a real, answerable statement set.
+    // Only use actual source-checked ministerial true/false items here.
+    ministerial.filter(q=>/(صح أم خطأ|صح ام خطأ|صح أو خطأ|صح او خطأ)/.test(q.question)).slice(0,8).forEach(q=>{
+      tf.push({question:q.question,answer:q.answer,sourceLabel:q.sourceLabel||q.sourceUrl,source:'وزاري موثّق',verified:true});
+    });
     const qbank=(typeof quizBank!=='undefined'?quizBank:[]).filter(x=>{
       const t=norm((x.q||'')+' '+(x.a||''));
       const words=norm(l.title).split(' ').filter(w=>w.length>3);
