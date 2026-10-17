@@ -89,8 +89,8 @@
         const raw=q.question||q.q||'';
         if(!raw)return;
         const answer=q.answer??q.a??'';
-        const isVerified=!!verified&&q.verified===true&&!!q.sourceId&&!!q.sourceUrl&&String(answer).trim().length>0;
-        if(verified&&!isVerified)return;
+        const isVerified=q.verified===true&&!!q.sourceId&&!!q.sourceUrl&&String(answer).trim().length>0;
+        if(q.verified===true&&!isVerified)return;
         const id=q.id||('l'+lessonId+'_'+cat+'_'+n+'_'+hash(raw));
         out.push({...q,id,lessonId:Number(lessonId),category:cat,type:isVerified?'وزاري موثّق':'تدريب من الكتاب',verified:isVerified,q:raw,a:answer});
       });
