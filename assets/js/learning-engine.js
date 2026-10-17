@@ -88,8 +88,11 @@
       (arr||[]).forEach((q,n)=>{
         const raw=q.question||q.q||'';
         if(!raw)return;
+        const answer=q.answer??q.a??'';
+        const isVerified=!!verified&&q.verified===true&&!!q.sourceId&&!!q.sourceUrl&&String(answer).trim().length>0;
+        if(verified&&!isVerified)return;
         const id=q.id||('l'+lessonId+'_'+cat+'_'+n+'_'+hash(raw));
-        out.push({...q,id,lessonId:Number(lessonId),category:cat,type:verified?'وزاري موثّق':'تدريب من الكتاب',verified:!!verified,q:raw,a:q.answer??q.a??''});
+        out.push({...q,id,lessonId:Number(lessonId),category:cat,type:isVerified?'وزاري موثّق':'تدريب من الكتاب',verified:isVerified,q:raw,a:answer});
       });
     };
     add(c.ministerial,'وزاريات',true);
