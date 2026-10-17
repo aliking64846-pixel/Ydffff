@@ -127,7 +127,8 @@
     if(reasons.length===0) reasons.push({question:'علل أهمية دراسة «'+l.title+'».',answer:'لفهم الأفكار والمعلومات الأساسية الواردة في هذا الدرس وربطها بالأسئلة.',source:'تدريب تثبيت — ليس وزارياً'});
     if(enumers.length===0) enumers.push({question:'اذكر أهم فكرة في درس «'+l.title+'».',answer:[l.summary],source:'تدريب تثبيت — ليس وزارياً'});
     if(blanks.length===0) blanks.push({question:'أكمل: يتناول هذا الدرس موضوع ______.',answer:l.title,source:'تدريب تثبيت — ليس وزارياً'});
-    if(tf.length===0) tf.push({question:'صح أم خطأ: يتناول درس «'+l.title+'» موضوعاً من موضوعات الاجتماعيات.',answer:true,correction:'صح.',source:'تدريب تثبيت — ليس وزارياً'});
+    // Leave true/false empty unless a real, answerable item is available.
+    // The UI will state that this type has not yet been reviewed.
     return {
       version:CONTENT_VERSION,lessonId:l.id,sourceFile:'book-'+sourceFor(l)+'.txt',
       pages:[...new Set(picked.map(x=>x.page))],info,
