@@ -73,7 +73,15 @@
   document.addEventListener('click',function(e){
     try{
       var m=document.getElementById('moreMenu');
-      if(m&&m.classList.contains('open')&&!e.target.closest('#moreMenu')&&!e.target.closest('#moreBtn'))m.classList.remove('open');
+      if(!m || !m.classList.contains('open'))return;
+      /* Close immediately after choosing any item in More, including items
+         whose own action does not call toggleMoreMenu(). */
+      if(e.target.closest('#moreMenu button')){
+        m.classList.remove('open');
+        return;
+      }
+      /* A tap outside the menu closes it; tapping More itself still toggles it. */
+      if(!e.target.closest('#moreMenu')&&!e.target.closest('#moreBtn'))m.classList.remove('open');
     }catch(err){}
   },false);
 })();
