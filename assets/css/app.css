@@ -193,3 +193,48 @@ body{padding-bottom:70px}
 @media (prefers-reduced-motion: reduce) {
   .nav { transition: none !important; }
 }
+
+
+/* FUTURE 100 cinematic redesign — preserves existing lesson/test logic */
+:root{--bg:#020817;--panel:#06152a;--panel2:#0a2040;--line:#075b91;--cyan:#00d9ff;--blue:#168bff;--green:#36f4b2;--purple:#7c6dff;--gold:#ffc35b;--text:#f4f9ff;--muted:#9cb9d5;--shadow:0 18px 55px rgba(0,0,0,.42)}
+html{background:#020817}
+body{background:radial-gradient(ellipse at 50% -20%,#164b7b 0%,#071a35 35%,#020817 76%);background-attachment:fixed}
+.app{max-width:1560px;padding:12px 20px 32px}
+.top{height:auto;min-height:88px;padding:12px 18px;border:1px solid #0b4770;border-radius:0 0 24px 24px;background:linear-gradient(110deg,rgba(3,14,32,.97),rgba(4,27,53,.92));box-shadow:0 12px 40px #001020aa}
+.logoTitle b{font-size:25px;letter-spacing:.2px;text-shadow:0 0 20px #00bfff55}
+.logoTitle strong{color:#13cfff;font-size:32px}
+.avatar{background:radial-gradient(circle at 35% 25%,#8deaff,#15548e 52%,#04152c);border:2px solid #13cfff;box-shadow:0 0 18px #00aaff55}
+.searchTop,.search, input,select{background:#041329!important;border:1px solid #14527b!important;color:#f2f9ff!important;border-radius:13px!important}
+.searchTop:focus,.search:focus,input:focus,select:focus{outline:1px solid #00d9ff;box-shadow:0 0 0 3px #00cfff20}
+.nav{background:rgba(2,13,29,.94);border:1px solid #0b4770;border-radius:20px;padding:8px;box-shadow:0 10px 35px #0007}
+.navbtn{border-radius:14px;transition:transform .18s,border-color .18s,background .18s}
+.navbtn:hover{transform:translateY(-2px);background:#0a2a4c}
+.navbtn.active{background:linear-gradient(145deg,#073e68,#071d39);border:1px solid #00cfff66;box-shadow:inset 0 0 22px #00bfff15,0 0 20px #00bfff12;color:#6deaff}
+.panelBox,.brain,.bookShell,.ministryShell,.card,.lessonCard,.quizCard,.examCard{background:linear-gradient(145deg,rgba(7,28,53,.97),rgba(3,14,30,.97))!important;border:1px solid #124b75!important;border-radius:22px!important;box-shadow:0 18px 48px #0004,inset 0 1px #ffffff08}
+.sectionTitle{color:#e9f8ff}
+.sectionTitle span{letter-spacing:.1px}
+button.primary,.primary,.primaryM{background:linear-gradient(100deg,#0878ff,#00c8ee)!important;color:#001324!important;border:0!important;border-radius:12px!important;font-weight:700;box-shadow:0 6px 22px #008dff2b}
+button.ghost,.ghost,.filter,.action{background:#061d37!important;border:1px solid #155580!important;border-radius:12px!important}
+button:hover{filter:brightness(1.12)}
+.cards{gap:16px}
+.cards>*{transition:transform .2s,border-color .2s,box-shadow .2s}
+.cards>*:hover{transform:translateY(-3px);border-color:#00cfff!important;box-shadow:0 14px 34px #008cff20}
+.moreMenu{background:linear-gradient(145deg,#071c35,#020b1b)!important;border:1px solid #0875aa!important;border-radius:18px!important;box-shadow:0 20px 50px #0009}
+.footer{color:#7fa8c8;border-top:1px solid #0c3555;padding-top:18px}
+.toast{border:1px solid #00bfe8!important;background:#061a30!important;border-radius:14px!important;box-shadow:0 0 25px #008cff22}
+#home{position:relative}
+#today{min-height:0}
+#today:empty{display:none}
+#home .panelBox:first-of-type{margin-top:14px!important}
+@media(max-width:760px){
+ .app{padding:0 10px 24px}
+ .top{grid-template-columns:1fr auto;gap:8px;padding:10px;border-radius:0 0 18px 18px}
+ .top .searchTop{grid-column:1/-1;grid-row:2;width:100%;min-height:42px}
+ .topRight{grid-column:2;grid-row:1}
+ .brand{grid-column:1;grid-row:1}
+ .logoTitle b{font-size:20px}.logoTitle strong{font-size:26px}
+ .nav{border-radius:16px;gap:3px;padding:5px}
+ .navbtn{min-width:0;padding:8px 4px}
+ .navbtn small{font-size:10px}
+ .panelBox,.brain,.bookShell,.ministryShell{border-radius:17px!important}
+}
