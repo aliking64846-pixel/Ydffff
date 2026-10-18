@@ -238,3 +238,53 @@ button:hover{filter:brightness(1.12)}
  .navbtn small{font-size:10px}
  .panelBox,.brain,.bookShell,.ministryShell{border-radius:17px!important}
 }
+
+
+/* Cinematic landing hero */
+.cinemaHero{margin:18px 0 22px;overflow:hidden;border:1px solid #0d5b8b;border-radius:26px;background:linear-gradient(125deg,#061a33,#061126 55%,#082749);box-shadow:0 24px 70px #0007;position:relative}
+.cinemaSky{min-height:350px;position:relative;display:flex;align-items:center;padding:34px 5%;overflow:hidden;background:radial-gradient(ellipse at 72% 45%,#0a4c7b 0,#092847 24%,transparent 53%),linear-gradient(100deg,#061126 0%,#061a33 55%,#071a31 100%)}
+.cinemaSky:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0 35%,#00aaff0c 60%,transparent),repeating-linear-gradient(0deg,transparent 0 43px,#24baff0b 44px),repeating-linear-gradient(90deg,transparent 0 43px,#24baff0b 44px);mask-image:linear-gradient(to bottom,black,transparent 95%);pointer-events:none}
+.heroCopy{position:relative;z-index:2;max-width:48%;padding:12px 0}
+.heroEyebrow{display:inline-block;color:#57e7ff;border:1px solid #00bfff55;border-radius:99px;padding:7px 13px;background:#032747aa;font-size:13px}
+.heroCopy h1{font-size:clamp(32px,4vw,62px);line-height:1.1;margin:17px 0 10px;text-shadow:0 0 35px #00aaff44}
+.heroCopy h1 strong{color:#11d4ff;font-size:1.1em}
+.heroCopy p{font-size:clamp(14px,1.5vw,20px);color:#b9d8f2;margin:0 0 22px}
+.heroButtons{display:flex;gap:10px;flex-wrap:wrap}
+.heroButtons button{padding:12px 18px;border-radius:12px;cursor:pointer;font-weight:bold}
+.heroPrimary{background:linear-gradient(100deg,#087bff,#00d4ed);color:#001527;border:0;box-shadow:0 8px 28px #008dff35}
+.heroSecondary{color:#c7f4ff;background:#061c35;border:1px solid #0e78a9}
+.heroTeacher{position:absolute;z-index:1;left:25%;top:5%;width:34%;height:88%;display:flex;justify-content:center;align-items:center}
+.teacherHalo{position:absolute;width:82%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#00cfff24 0,#00aaff0c 43%,transparent 70%);border:1px solid #31d7ff25;box-shadow:0 0 70px #008cff20}
+.orbit{position:absolute;border:1px solid #00cfff2c;border-radius:50%;width:390px;height:145px;transform:rotate(-22deg);pointer-events:none}
+.orbitTwo{width:430px;height:180px;transform:rotate(36deg);border-color:#168bff25}
+.teacherFigure{position:relative;width:126px;height:250px;filter:drop-shadow(0 0 24px #008cff3a)}
+.teacherHead{position:absolute;top:10px;left:42px;width:43px;height:54px;border-radius:48% 48% 44% 44%;background:linear-gradient(110deg,#f0c6a6,#b97f66 75%);box-shadow:inset -8px 0 #704c49}
+.teacherHead:before{content:"";position:absolute;top:-5px;left:0;width:44px;height:21px;border-radius:60% 60% 20% 20%;background:#17253a}
+.teacherBody{position:absolute;top:60px;left:19px;width:91px;height:130px;border-radius:24px 24px 12px 12px;background:linear-gradient(110deg,#101d32,#263d59 45%,#071326);border:1px solid #168bff70;box-shadow:inset 0 0 0 2px #ffffff08}
+.teacherBody:before{content:"";position:absolute;top:0;left:40px;height:100%;border-left:2px solid #16cfff7a}
+.teacherArm{position:absolute;top:76px;left:0;width:48px;height:18px;border-radius:20px;background:linear-gradient(#293f5a,#0b172b);transform:rotate(-24deg);transform-origin:right center}
+.teacherCaption{position:absolute;bottom:0;white-space:nowrap;color:#8fefff;background:#04172cd9;border:1px solid #0d6794;border-radius:30px;padding:8px 13px;font-size:12px}
+.heroMiniCard{position:absolute;right:4%;top:14%;display:grid;gap:4px;min-width:145px;padding:13px;border:1px solid #0c6794;border-radius:15px;background:#03172cd9;box-shadow:0 10px 28px #0004}
+.heroMiniCard span{font-size:25px}.heroMiniCard b{color:#e9faff}.heroMiniCard small{color:#82b7d9}
+.heroStats{position:absolute;right:4%;bottom:12%;display:flex;gap:8px}
+.heroStats div{display:grid;gap:4px;text-align:center;padding:11px 13px;min-width:88px;border:1px solid #0d5079;border-radius:13px;background:#03172cdb}
+.heroStats b{color:#42e6ff;font-size:20px}.heroStats small{font-size:11px;color:#9ebed8}
+.subjectRail{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:0 18px 18px}
+.subjectRail button{display:grid;grid-template-columns:42px 1fr;grid-template-rows:auto auto;align-items:center;text-align:right;gap:2px 10px;min-height:78px;padding:12px;border:1px solid #10466c;border-radius:15px;background:linear-gradient(145deg,#092342,#041329);color:#effaff;cursor:pointer;transition:.2s}
+.subjectRail button:hover{transform:translateY(-3px);border-color:#00d9ff;box-shadow:0 10px 25px #008cff18}
+.subjectRail button span{grid-row:1/3;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:#07395a;font-size:22px}
+.subjectRail button b{font-size:14px}.subjectRail button small{font-size:11px;color:#8fb4d2}
+@media(max-width:760px){
+ .cinemaHero{margin:12px 0 16px;border-radius:19px}
+ .cinemaSky{min-height:350px;padding:24px 18px 150px;align-items:flex-start}
+ .heroCopy{max-width:74%;padding-top:4px}
+ .heroCopy h1{font-size:32px}.heroCopy p{font-size:13px;max-width:230px}
+ .heroTeacher{left:32%;top:25%;width:55%;height:64%;opacity:.8}
+ .teacherFigure{transform:scale(.8);transform-origin:center}
+ .heroMiniCard{right:12px;top:auto;bottom:90px;min-width:112px;padding:9px;font-size:12px}
+ .heroMiniCard span{font-size:20px}.heroStats{left:12px;right:12px;bottom:12px;justify-content:space-between}
+ .heroStats div{min-width:0;flex:1;padding:8px 4px}.heroStats b{font-size:16px}.heroStats small{font-size:9px}
+ .subjectRail{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:0 10px 12px}
+ .subjectRail button{min-height:70px;padding:9px;grid-template-columns:34px 1fr;gap:2px 7px}
+ .subjectRail button span{width:32px;height:32px;font-size:18px}.subjectRail button b{font-size:12px}.subjectRail button small{font-size:10px}
+}
