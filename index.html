@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#050e1b">
 <title>مستقبلي 100 — اجتماعيات ثالث متوسط</title>
-<link rel="stylesheet" href="assets/css/app.css?v=20261012-scrollhide2">
+<link rel="stylesheet" href="assets/css/app.css?v=20261018-cinematic1">
 
 </head>
 <body>
@@ -33,7 +33,14 @@
 </div>
 
 <main>
-<section id="home" class="view active"><div id="today"></div><div class="panelBox" style="margin-top:14px"><div class="sectionTitle"><span>🗺️ خريطة إتقاني للـ62 درس</span><button onclick="openMasteryMap()">فتح الخريطة ←</button></div><p class="small">اعرف فوراً الدروس القوية والضعيفة وما الذي يحتاج تكراراً.</p></div><div class="panelBox" style="margin-top:14px"><div class="sectionTitle"><span>📅 خطتي قبل الامتحان</span><button onclick="openExamPlan()">بناء الخطة ←</button></div><p class="small">أدخل عدد الأيام المتبقية، والنظام يوزع الدروس والوزاريات والأخطاء تلقائياً.</p></div></section><section id="masteryMap" class="view"><div class="panelBox"><div class="sectionTitle"><span>🧠 خريطة الإتقان — 62 درس</span><button onclick="setView('home')">← الرئيسية</button></div><div id="masterySummary" class="kpiGrid" style="margin-bottom:14px"></div><div id="masteryMapContent"></div></div></section>
+<section id="home" class="view active"><section class="cinemaHero" aria-label="مرحباً بك في مستقبلي 100">
+  <div class="cinemaSky"><span class="orbit orbitOne"></span><span class="orbit orbitTwo"></span><div class="heroCopy"><span class="heroEyebrow">من العراق نصنع مستقبلك</span><h1>مستقبلي <strong>100</strong></h1><p>رحلتك نحو التفوق تبدأ من هنا</p><div class="heroButtons"><button class="heroPrimary" onclick="return window.__future100SafeNavigate('lessons')">ابدأ رحلتك <b>←</b></button><button class="heroSecondary" onclick="openMasteryMap()">خريطة إتقاني</button></div></div>
+  <div class="heroTeacher" aria-hidden="true"><div class="teacherHalo"></div><div class="teacherFigure"><span class="teacherHead"></span><span class="teacherBody"></span><span class="teacherArm"></span></div><div class="teacherCaption">معلّمك يرافقك في كل درس</div></div>
+  <div class="heroMiniCard"><span>🌍</span><b>اكتشف العالم</b><small>تعلم بصري تفاعلي</small></div>
+  <div class="heroStats"><div><b>62</b><small>درساً منظماً</small></div><div><b>100%</b><small>هدفنا إتقانك</small></div><div><b>24/7</b><small>رحلتك مستمرة</small></div></div>
+  </div>
+  <div class="subjectRail"><button onclick="return window.__future100SafeNavigate('lessons')"><span>🌍</span><b>الجغرافية</b><small>الخرائط والاستكشاف</small></button><button onclick="return window.__future100SafeNavigate('lessons')"><span>🏛️</span><b>التاريخ</b><small>رحلات إلى الماضي</small></button><button onclick="return window.__future100SafeNavigate('lessons')"><span>🇮🇶</span><b>التربية الوطنية</b><small>افهم وطنك</small></button><button onclick="return window.__future100SafeNavigate('ministry')"><span>🏆</span><b>الوزاريات</b><small>تدرّب حتى تتقن</small></button></div>
+</section><div id="today"></div><div class="panelBox" style="margin-top:14px"><div class="sectionTitle"><span>🗺️ خريطة إتقاني للـ62 درس</span><button onclick="openMasteryMap()">فتح الخريطة ←</button></div><p class="small">اعرف فوراً الدروس القوية والضعيفة وما الذي يحتاج تكراراً.</p></div><div class="panelBox" style="margin-top:14px"><div class="sectionTitle"><span>📅 خطتي قبل الامتحان</span><button onclick="openExamPlan()">بناء الخطة ←</button></div><p class="small">أدخل عدد الأيام المتبقية، والنظام يوزع الدروس والوزاريات والأخطاء تلقائياً.</p></div></section><section id="masteryMap" class="view"><div class="panelBox"><div class="sectionTitle"><span>🧠 خريطة الإتقان — 62 درس</span><button onclick="setView('home')">← الرئيسية</button></div><div id="masterySummary" class="kpiGrid" style="margin-bottom:14px"></div><div id="masteryMapContent"></div></div></section>
 <section id="lessons" class="view">
   <div class="toolbar"><input id="search" class="search" placeholder="ابحث عن درس..."><button class="filter" id="allBtn">كل الدروس</button></div>
   <div class="cards" id="cards"></div>
